@@ -1,1 +1,4 @@
-# Outfit_Analytics_DataScience_Proyecto_Final
+# Outfit_Analytics_Proyecto_Final
+Repositorio colaborativo proyecto final
+
+modificaciones
