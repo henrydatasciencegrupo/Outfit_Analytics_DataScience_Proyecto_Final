@@ -204,3 +204,14 @@ $RECYCLE.BIN/
 /base_datos/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,windows
+# Datos locales (muestras Parquet y paquetes de modelado): no subir
+/dataset/
+/p10_modelado/
+*.parquet
+*.zip
+
+# Datos locales (muestras Parquet y paquetes de modelado): no subir
+/dataset/
+/p10_modelado/
+*.parquet
+*.zip
