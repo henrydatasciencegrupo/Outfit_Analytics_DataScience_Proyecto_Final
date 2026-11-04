@@ -75,6 +75,7 @@ Los pares código y nombre (`_no` y `_name`) son consistentes: ningún código t
 - **Fecha:** 734 días continuos, sin huecos. Sin hora. Día récord: 11/4/2020 (16.104 compras).
 - **Precio:** cola larga y gradual a la derecha. Cuantiles: mediana 0,0254; p90 0,0508; p99 0,1017; p99,9 0,1749; máximo 0,5068. Sin precios cero o negativos. No se elimina nada: la cola alta corresponde a abrigos y camperas (ver Parte 2).
 - **Duplicados:** 266.398 filas completamente repetidas (11,96%) y 284.045 ignorando el precio. La diferencia (17.647) son casos con precio distinto. Posibles causas: varias unidades, distintos talles o compra más devolución. No se puede confirmar.
+  **Por qué no se eliminan los duplicados.** No se puede confirmar si son errores: la tabla no tiene talle ni cantidad e incluye compras devueltas, así que una fila repetida puede ser una segunda unidad, otro talle o una compra más su devolución. Hay además 17.647 filas repetidas que solo difieren en el precio. Borrarlas perdería información posiblemente real y no se puede deshacer; por eso se ofrecen las dos versiones y se elige con el modelo funcionando.
 
 ## Hallazgos en `cust` (variable por variable)
 

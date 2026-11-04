@@ -33,6 +33,7 @@ Sprint 1: análisis exploratorio terminado sobre la muestra p10. El corte train/
 
 - **Muestra p10:** 110.252 clientes, 2.226.486 compras y 105.542 artículos, del 20/9/2018 al 22/9/2020, sin días sin compras. Integridad completa entre tablas.
 - **Duplicados:** el 11,96% de las compras son filas repetidas; no se puede confirmar si son varias unidades, distintos talles o devoluciones.
+  **Por qué no se eliminan los duplicados.** No se puede confirmar si son errores: la tabla no tiene talle ni cantidad e incluye compras devueltas, así que una fila repetida puede ser una segunda unidad, otro talle o una compra más su devolución. Hay además 17.647 filas repetidas que solo difieren en el precio. Borrarlas perdería información posiblemente real y no se puede deshacer; por eso se ofrecen las dos versiones y se elige con el modelo funcionando.
 - **Edad:** 1,10% de vacíos; la distribución tiene dos grupos (alrededor de los 20 a 30 y de los 50 años). Los clientes sin edad compran menos (mediana de 3 compras contra 8).
   Por qué no se imputa en la tabla original: son pocos (1,10%) y en el test solo 7 clientes no tienen edad (ninguno es frío), así que la decisión casi no cambia la evaluación; que falte la edad es informativo (esos clientes compran menos) y rellenar en silencio taparía esa señal; y cómo imputar depende del algoritmo, por eso se ofrecen las tres columnas y cada modelo elige.
 - **Estacionalidad:** las ventas siguen un patrón del hemisferio norte (ropa de baño entre mayo y julio, punto entre septiembre y noviembre), invertido respecto de Argentina.
