@@ -126,7 +126,7 @@ Corte propuesto, **pendiente de acuerdo del grupo**: train hasta el 15/9/2020, t
 - Duplicados: mantener o colapsar a una interacción por cliente, artículo y día.
 - Edad vacía (grupo "sin edad"), edad por tramos y uso de `PRE-CREATE` (propuesta: no usarla).
 - Método de simulación de clientes fríos (0, 1 o 2 compras visibles) y tratamiento de los artículos del test ausentes en train.
-- Criterio para simular el mercado nuevo, ya que no se usa el código postal (la justificación va en el README).
+- Criterio para simular el mercado nuevo, ya que no se usa el código postal (la justificación va en el README). Propuesta a evaluar: apartar un tramo de edad (la edad está en el 98,9% de los clientes y la mezcla de productos cambia con ella); simula un segmento nuevo, no un mercado completo.
 - Verificar las definiciones de las columnas contra la pestaña Data de Kaggle.
 
 ## Limitaciones a declarar
