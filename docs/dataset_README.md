@@ -31,3 +31,18 @@ dataset/
 ```
 
 Los Parquet se abren con `pd.read_parquet(...)` (hace falta `pyarrow`).
+
+## Fuentes y referencias
+
+Qué fuentes externas usamos para entender los datos. Donde el EDA habla de la "documentación del dataset", se refiere a las referencias 2 y 4 de esta tabla.
+
+| # | Referencia | Qué respalda | Tipo de fuente |
+|---|---|---|---|
+| 1 | [Página de la competencia H&M Personalized Fashion Recommendations](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations) | Origen de los datos, archivos originales y condiciones de uso | Primaria |
+| 2 | [Discusión de la competencia: resumen de un participante con comentarios del organizador y del staff](https://www.kaggle.com/c/h-and-m-personalized-fashion-recommendations/discussion/307001) | El precio está escalado y no revela valores reales; `sales_channel_id`: 1 = tienda, 2 = online; la tabla de transacciones incluye compras devueltas; se permite recomendar artículos ya comprados; `FN` indica si recibe el newsletter de moda y `Active` si está activo para comunicaciones; no se revela el mercado de origen; el test de la competencia son los 7 días posteriores al fin de los datos | Segunda mano (un participante resume lo que dijeron el organizador y el staff) |
+| 3 | [Hilo "Recommender systems - Evaluation hell", de la misma competencia](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/discussion/307153) | La evaluación *offline* solo registra compras, no lo que vio cada cliente (sesgo de exposición) | Opinión de un participante, no del organizador |
+| 4 | [Pestaña *Data* de la competencia](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations/data) | Descripción oficial de los archivos; las filas duplicadas de transacciones son compras múltiples del mismo artículo; el test son los 7 días posteriores al fin de los datos; se puntúan todos los clientes que compraron en ese período, tengan o no historial | Primaria. **No incluye diccionario de columnas**: las definiciones de `customers` y `articles` se interpretan por el nombre de la columna |
+
+Una afirmación del EDA **no tiene fuente puntual registrada**: que las ventas siguen un patrón de hemisferio norte (se infiere de los propios datos). Sobre abril de 2020 (mes atípico), la referencia 2 recoge comentarios de participantes, **no del organizador**: señalan que faltan las transacciones de tienda física de ese mes, lo vinculan con el cierre de tiendas por la pandemia y proponen tratarlo como atípico. Es una explicación plausible; el dataset no la confirma.
+
+El significado de cada variable está en [`glosario_variables.md`](glosario_variables.md).

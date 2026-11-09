@@ -9,13 +9,13 @@ Registro de lo que se verificó con los datos y lo que falta verificar. Se actua
 - **Solo canal 2 (online):** confirmado por todo el grupo (2026-11-02).
 - **Tamaño de la muestra:** se empieza con **p10 como muestra oficial** y p5 como respaldo (misma estructura). Se confirma con el grupo **antes de arrancar el EDA**, con una celda de prueba que corre cada integrante en su compu. Todos usan **la misma** muestra. Una vez iniciado el EDA **no se cambia de tamaño**, porque invalida la comparación de lo ya hecho. Si a alguien se le cuelga, primero se hacen pruebas para que funcione (cerrar aplicaciones, cargar menos columnas, consultar el Parquet con DuckDB); si no alcanza, baja **todo el grupo** a p5. Ver "Elección del tamaño". Faltan los resultados de la celda de prueba de los compañeros.
 - **EDA:** lo hace cada integrante por su cuenta y después se compara (ver "Cómo se organiza el EDA").
-- **Corte train/test (provisorio, a confirmar con el grupo):** test = **16/9/2020 a 22/9/2020** (últimos 7 días del dataset); train = todo lo anterior (hasta el 15/9/2020), sin solapamiento. Es la misma regla que usa Kaggle (7 días posteriores al fin del entrenamiento). Septiembre 2020 **no** está incompleto: el dataset va del 20/9/2018 al 22/9/2020 (734 días, sin días faltantes) y los últimos días tienen entre 2.482 y 2.552 compras diarias en total. Desde el corte, la exploración que depende de fechas o artículos se hace solo con el train (para evitar leakage); los controles de calidad usan los datos completos.
+- **Corte train/test (provisorio, a confirmar con el grupo):** test = **16/9/2020 a 22/9/2020** (últimos 7 días del dataset); train = todo lo anterior (hasta el 15/9/2020), sin solapamiento. Es la misma regla del esquema de evaluación original del dataset (7 días posteriores al fin del entrenamiento). Septiembre 2020 **no** está incompleto: el dataset va del 20/9/2018 al 22/9/2020 (734 días, sin días faltantes) y los últimos días tienen entre 2.482 y 2.552 compras diarias en total. Desde el corte, la exploración que depende de fechas o artículos se hace solo con el train (para evitar leakage); los controles de calidad usan los datos completos.
 
 ## Verificado sobre los archivos originales
 
 | Control | Resultado | Fecha |
 |---|---|---|
-| Canal de venta: valor que corresponde a online | `sales_channel_id` = 2. Respaldo: comentario del Host de Kaggle y los datos (en abril 2020 el canal 1 no tiene filas) | 2026-10-31 (confirmado 2026-11-03) |
+| Canal de venta: valor que corresponde a online | `sales_channel_id` = 2. Respaldo: documentación del dataset y los datos (en abril 2020 el canal 1 no tiene filas) | 2026-10-31 (confirmado 2026-11-03) |
 | Transacciones online (canal 2) | 22.379.862 filas | 2026-10-31 |
 | Clientes con al menos una compra online | 1.108.418 | 2026-10-31 |
 | Total sin filtrar | 31.788.324 filas y 1.371.980 clientes (en transacciones) | 2026-10-31 |
@@ -194,7 +194,7 @@ Riesgo a vigilar: si cada una decide por su cuenta, el baseline y las métricas 
 7. **Artículos del test ausentes en el train:** decidir si se evalúan igual (sin posibilidad de acierto para modelos de co-compra) o se reportan por separado.
 8. **Definición de baseline:** historial completo contra ventana reciente (tarea de quien modela).
 9. **Simulación de mercado nuevo:** criterio alternativo a `postal_code`.
-10. **Verificación pendiente:** diccionario de datos de la pestaña Data de Kaggle.
+10. **Verificación pendiente:** diccionario de datos oficial del dataset.
 
 ## Paquete de modelado (p10)
 
