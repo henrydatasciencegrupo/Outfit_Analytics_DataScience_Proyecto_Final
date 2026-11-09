@@ -1,0 +1,10 @@
+﻿Tema,Hallazgo,Afectados,% del total,Decisión,Por qué
+Canal de venta,Filas fuera del canal online,0,0.0,Solo canal 2 (online),El sistema recomienda en e-commerce; la muestra ya viene filtrada
+Duplicados,"Misma prenda, mismo cliente, mismo día",284045,12.76,Se conservan,No hay evidencia de error (pueden ser varias unidades); representan más demanda
+Meses atípicos,Compras de marzo a mayo 2020,320246,14.38,Se conservan en train,La evaluación no cae en ese período; quitarlos eliminaría datos recientes
+Precios extremos,Precios fuera del rango IQR,166798,7.49,No se eliminan,Son ventas reales; el precio no es la variable objetivo (solo se usa como promedio)
+Edad vacía,Clientes sin edad,1208,1.1,No se imputa: grupo 'sin edad',Imputar asignaría gustos ajenos; afecta a ~1% de los clientes
+Edades extremas,Edad < 18 o > 90,717,0.65,Se conservan,Son valores posibles; quedan en los tramos <25 y 55+
+Variables de cliente,"Columnas excluidas: FN, Active, club_member_status, fashion_news_frequency, postal_code",5,71.43,Solo se usa la edad,Son una foto de un único momento (riesgo de fuga de información) y aportan poca señal
+Descripción de artículo,detail_desc vacía,416,0.39,Se conserva vacía,Los modelos actuales no usan texto libre
+Categoría 'Unknown',garment_group_name = 'Unknown',3873,3.67,Se trata como una categoría más,"Es una clasificación explícita, no un faltante oculto"
