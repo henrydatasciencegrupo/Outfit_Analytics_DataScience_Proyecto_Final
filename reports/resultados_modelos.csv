@@ -1,0 +1,7 @@
+﻿Corte,Modelo,Grupo,Clientes,MAP@12,Prendas distintas,Clientes con acierto,Hit Rate@12 (%),Recall@12 (%),Precision@12 (%)
+Test 16-22/09/2020,Baseline histórico,Todos,4162,0.0029,12,102,2.45,0.73,0.23
+Test 16-22/09/2020,Baseline histórico,Fríos,437,0.0009,12,8,1.83,0.42,0.17
+Test 16-22/09/2020,Baseline reciente (7 días),Todos,4162,0.0083,12,290,6.97,2.71,0.65
+Test 16-22/09/2020,Baseline reciente (7 días),Fríos,437,0.0072,12,20,4.58,2.07,0.46
+Test 16-22/09/2020,Modelo 1: popularidad por edad (30 días),Todos,4162,0.0056,54,226,5.43,2.06,0.48
+Test 16-22/09/2020,Modelo 1: popularidad por edad (30 días),Fríos,437,0.0058,44,19,4.35,1.86,0.38
