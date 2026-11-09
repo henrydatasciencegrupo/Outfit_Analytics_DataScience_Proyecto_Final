@@ -31,3 +31,18 @@ dataset/
 ```
 
 Los Parquet se abren con `pd.read_parquet(...)` (hace falta `pyarrow`).
+
+## Fuentes y referencias
+
+Qué fuentes externas usamos para entender los datos. Donde el EDA habla de la "documentación del dataset", se refiere a las referencias 2 y 4 de esta tabla.
+
+| # | Referencia | Qué respalda | Tipo de fuente |
+|---|---|---|---|
+| 1 | [Página de la competencia H&M Personalized Fashion Recommendations](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations) | Origen de los datos, archivos originales y condiciones de uso | Primaria |
+| 2 | [Discusión de la competencia: resumen de un participante con comentarios del organizador y del staff](https://www.kaggle.com/c/h-and-m-personalized-fashion-recommendations/discussion/307001) | El precio está escalado y no revela valores reales; `sales_channel_id`: 1 = tienda, 2 = online; la tabla de transacciones incluye compras devueltas; se permite recomendar artículos ya comprados; no se revela el mercado de origen; el test de la competencia son los 7 días posteriores al fin de los datos | Segunda mano (un participante resume lo que dijeron el organizador y el staff) |
+| 3 | Hilo "Recommender systems - Evaluation hell", de la misma competencia (enlace por agregar) | La evaluación *offline* solo registra compras, no lo que vio cada cliente (sesgo de exposición) | Opinión de un participante, no del organizador |
+| 4 | Pestaña *Data* de la competencia | Diccionario oficial de las columnas | **Pendiente de verificar**: hoy las definiciones de `customers` y `articles` se interpretan por el nombre de la columna |
+
+Dos afirmaciones del EDA **no tienen fuente puntual registrada**: que abril de 2020 es un mes atípico (coincide con el cierre de tiendas por la pandemia; es una hipótesis que otros análisis del dataset plantean, el dataset no lo dice) y que las ventas siguen un patrón de hemisferio norte (se infiere de los propios datos).
+
+El significado de cada variable está en [`glosario_variables.md`](glosario_variables.md).

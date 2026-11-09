@@ -11,7 +11,7 @@ H&M, multinacional sueca de moda, prevé abrir su primera tienda en Argentina en
 
 ## Datos
 
-Dataset de la competencia de Kaggle [H&M Personalized Fashion Recommendations](https://www.kaggle.com/competitions/h-and-m-personalized-fashion-recommendations). **No se incluye en este repositorio**: ver `docs/dataset_README.md` para obtenerlo y para reproducir la muestra del 10% (p10) que usamos.
+Dataset H&M Personalized Fashion Recommendations. **No se incluye en este repositorio**: ver `docs/dataset_README.md` para obtenerlo y para reproducir la muestra del 10% (p10) que usamos.
 
 ## Estructura
 
