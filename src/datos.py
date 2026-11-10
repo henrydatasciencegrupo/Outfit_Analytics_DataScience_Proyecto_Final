@@ -2,7 +2,7 @@
 datos.py — Carga, verificación y tratamiento de los datos
 =========================================================
 Lookwise Data Lab · Sistema de recomendación para clientes nuevos de H&M (e-commerce)
-Autora: Margot Huaman Quispe
+Autor: Lookwise Data Lab
 
 Propósito
 ---------
@@ -73,7 +73,7 @@ def verificar(trans: pd.DataFrame, cust: pd.DataFrame, art: pd.DataFrame) -> pd.
     filas = []
     for tabla, esperado in ESPERADO.items():
         filas.append({"Tabla": tabla, "Esperado (EDA)": str(esperado), "Obtenido": str(obtenido[tabla]),
-                      "OK": "✅" if obtenido[tabla] == esperado else "⚠️ distinto"})
+                      "OK": "Sí" if obtenido[tabla] == esperado else "Distinto"})
     return pd.DataFrame(filas)
 
 

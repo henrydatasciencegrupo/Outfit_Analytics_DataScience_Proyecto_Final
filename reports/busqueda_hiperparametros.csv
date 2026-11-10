@@ -1,0 +1,17 @@
+﻿Configuración,algoritmo,Recall@12,Hit Rate@12,MAP@12,Accuracy,Recall (clasificador),Precision (clasificador),F1,PR-AUC,Segundos
+"learning_rate=0.05, max_leaf_nodes=15, max_iter=200, l2_regularization=1.0, class_weight=balanced",hgb,0.0692,0.14807,0.03395,0.77462,0.5838,0.01162,0.02278,0.0414,8.1
+"learning_rate=0.05, max_leaf_nodes=31, max_iter=400, l2_regularization=1.0, class_weight=None",hgb,0.06871,0.14555,0.03339,0.99549,0.0,0.0,0.0,0.03962,11.7
+"learning_rate=0.05, max_leaf_nodes=15, max_iter=200, l2_regularization=1.0, class_weight=None",hgb,0.06852,0.14486,0.03298,0.9955,0.00111,1.0,0.00222,0.04268,11.3
+"learning_rate=0.1, max_leaf_nodes=31, max_iter=200, l2_regularization=1.0, class_weight=None",hgb,0.06777,0.14141,0.0321,0.9955,0.00166,0.42857,0.00332,0.03624,8.2
+"learning_rate=0.1, max_leaf_nodes=31, max_iter=200, l2_regularization=1.0, class_weight=balanced",hgb,0.06689,0.14233,0.03218,0.80728,0.53052,0.01237,0.02418,0.04086,6.3
+"learning_rate=0.05, max_leaf_nodes=31, max_iter=400, l2_regularization=1.0, class_weight=balanced",hgb,0.06665,0.14348,0.03305,0.80291,0.54384,0.01239,0.02423,0.04005,9.0
+"C=10.0, class_weight=balanced",logreg,0.06523,0.13705,0.03175,0.77902,0.54828,0.01114,0.02184,0.03393,4.3
+"C=1.0, class_weight=balanced",logreg,0.06523,0.13705,0.03173,0.77901,0.54828,0.01114,0.02184,0.03393,5.0
+"C=0.1, class_weight=balanced",logreg,0.06523,0.13705,0.03168,0.77904,0.54828,0.01115,0.02185,0.03393,3.4
+"C=0.01, class_weight=balanced",logreg,0.06511,0.13682,0.03164,0.77914,0.54883,0.01116,0.02188,0.03392,4.9
+"learning_rate=0.1, max_leaf_nodes=63, max_iter=300, l2_regularization=1.0, class_weight=balanced",hgb,0.06503,0.1382,0.03214,0.8344,0.49001,0.01332,0.02594,0.03528,6.7
+"C=10.0, class_weight=None",logreg,0.06499,0.13384,0.03229,0.9955,0.00166,0.6,0.00332,0.0339,3.7
+"C=1.0, class_weight=None",logreg,0.06485,0.13338,0.03227,0.9955,0.00166,0.6,0.00332,0.03389,4.6
+"learning_rate=0.1, max_leaf_nodes=63, max_iter=300, l2_regularization=1.0, class_weight=None",hgb,0.06479,0.14118,0.03166,0.99548,0.00277,0.27778,0.00549,0.03779,7.7
+"C=0.1, class_weight=None",logreg,0.06473,0.13315,0.03235,0.9955,0.00166,0.6,0.00332,0.03388,4.4
+"C=0.01, class_weight=None",logreg,0.0645,0.13269,0.03167,0.9955,0.00166,0.6,0.00332,0.03344,4.5

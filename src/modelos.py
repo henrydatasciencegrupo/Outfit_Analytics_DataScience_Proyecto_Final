@@ -2,7 +2,7 @@
 modelos.py — Modelos de recomendación
 =====================================
 Lookwise Data Lab · Sistema de recomendación para clientes nuevos de H&M (e-commerce)
-Autora: Margot Huaman Quispe
+Autor: Lookwise Data Lab
 
 Interfaz común
 --------------
@@ -360,7 +360,7 @@ class RankerSupervisado:
             try:
                 clf = crear_clasificador(alg, self.semilla)
             except ImportError as e:
-                print(f"⚠️ {ALGORITMOS[alg]} omitido: {e}")
+                print(f"Aviso: {ALGORITMOS[alg]} omitido: {e}")
                 continue
             inicio = time.time()
             clf.fit(self.X_entrenamiento, self.y_entrenamiento)
