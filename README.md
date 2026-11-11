@@ -1,70 +1,120 @@
-SOLUCIÓN ERRORES:
+# Lookwise Data Lab: recomendador para clientes sin historial (cold start)
 
-Problemas con merge/pull  requests - Conectar visual studio code con nuevo repositorio remoto en github:
+Proyecto final del bootcamp de Data Science de Soy Henry, hecho por el equipo **Lookwise Data Lab**. Metodología: **CRISP-DM con Scrum (sprints)**.
 
-Primero, chequear la conexión remota acutal:
+## Contexto y objetivo
 
-git remote –v
+H&M, multinacional sueca de moda, prevé abrir su primera tienda en Argentina en 2027. Como escenario del caso, planteamos que la apertura vaya acompañada del lanzamiento de su tienda online. Sin clientes ni compras locales, el sitio no puede personalizar la experiencia de sus primeros visitantes (*cold start*). Diseñamos un sistema de recomendación para ese lanzamiento.
 
-Se debería algo similar a:
-origin  https://github.com/personal-account/old-repository.git (fetch)
-origin  https://github.com/personal-account/old-repository.git (push)
+- **Módulo 1 (principal):** ranking de 12 productos para clientes nuevos o con poco historial, evaluado frente a un baseline de popularidad con **Recall@12** como métrica de decisión (y MAP@12, Precision@12 y Hit Rate@12 como apoyo), incluyendo clientes simulados como «fríos».
+- **Módulo 2 (posible extensión):** productos complementarios («Completá el look»).
 
-Copiar la nueva conexión http del nuevo repositorio github remoto. Luego ejecutar el siguiente comando in la terminal bahs del the VS code:
-git remote set-url origin https://github.com/team-account/new-repository.git
+## Datos
 
-Verificar la nueva conexión:
-git remote –v
+Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repositorio: ver [`docs/dataset_README.md`](docs/dataset_README.md) para obtenerlo, ver las fuentes y referencias y reproducir la muestra del 10% (p10) que usamos. El significado de cada variable está en [`docs/glosario_variables.md`](docs/glosario_variables.md).
 
-Se debería ver algo como:
-origin  https://github.com/team-account/new-repository.git (fetch)
-origin  https://github.com/team-account/new-repository.git (push)
+## Estructura
 
-Si al hacer push aparece un error, por ejemplo:
-git push origin developer
-remote: Permission to henrydatasciencegrupo/Outfit_Analytics_DataScience_Proyecto_Final.git denied to ignaciosironi.
-fatal: unable to access 'https://github.com/henrydatasciencegrupo/Outfit_Analytics_DataScience_Proyecto_Final.git/': The requested URL returned error: 403
+```text
+notebooks/        muestreo, EDA (02), baseline (03), modelos (04), simulación de clientes nuevos (05)
+                  y métricas, optimización y decisiones del modelo (06)
+src/              código del pipeline (datos, features, métricas, modelos, optimización, simulación)
+models/           modelo final entrenado y su configuración
+reports/          resultados en CSV y gráficos
+docs/             documentación por tema: EDA, datos y fuentes, controles de la muestra, glosario de variables
+requirements.txt
+```
 
-Es posible que se esté autenticado con otra cuenta de github. Se debe desconectar de la actual cuenta y conectar la nueva cuenta o invitar a esa cuenta como colaborador:
+En `notebooks/`, `02_EDA_unificado_p10.ipynb` es el EDA final (con salidas) y `02_EDA_individual_p10.ipynb`, la pre-exploración individual.
 
-Ir a la cuenta github principal y añadir a otros como colaboradores:
+## Cómo reproducirlo
 
-Ingresar al repositorio el cual será compartido -> luego sobre el menú superior seleccionar "settings" -> sobre la barra izquierda, debajo de la sección "accesos" seleccionar "colaborador" -> cliquear "add new people" y añadir el mail o github username de la otra cuenta a la que será enviado la invitación como colaborador.
+1. Instalar las librerías (Python 3.10 o superior):
 
-Luego ir a la otra cuenta de github e ir a notificaciones y aceptar la invitación.
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-PROBLEMA AL HACER MERGE REQUESTS AL CAMBIAR REPOSITORIO REMOTO:
+2. Conseguir los datos, de **una de estas dos formas**:
+   - **Desde cero:** aceptar las condiciones de uso del dataset (ver [`docs/dataset_README.md`](docs/dataset_README.md)), descargar los tres CSV y correr `notebooks/muestreo_p10_documentado.ipynb` (antes hay que poner en la celda de rutas dónde guardaste los CSV). Genera la muestra p10 con una semilla fija, así que todas obtienen la misma.
+   - **Con la muestra ya armada:** pedirle al equipo los tres archivos Parquet de la p10 (unos 63 MB) y dejarlos en `dataset/p10/` (esa carpeta no se sube al repositorio). Ver la estructura en [`docs/dataset_README.md`](docs/dataset_README.md).
+3. **Correr el EDA:** abrir `notebooks/02_EDA_unificado_p10.ipynb` desde la carpeta `notebooks/` y ejecutar todas las celdas.
+4. **Correr el modelado:** ejecutar los notebooks `03`, `04`, `05` y `06` en ese orden, o el pipeline completo desde la carpeta del repositorio:
 
-Cuando los archivos de vs code están conectados con cierto github repositorio y luego se necesita conectarse a otro repositorio remoto, tal vez suceda un conflicto al hacer push al remoto ya que no aparecerá el merge requests in the nuevo repositorio remoto github. Esto es un problema de "historias entre los ramas". Las ramas tendrán diferentes historiales de commits y entonces no estarán conectadas. Esto se debe a que al trabajo con el primer repositorio remoto, posiblemente se hayan hecho algunos commits. Luego se cambió a otro repositorio y fueron hecho nuevos commits, entonces se produjo una desconeccción entre las ramas al tener distintos commits de distintos repositorios.
-Para solucionar el conflicto de historio entre ramas, se tiene que correr algunos comandos git en la RAMA DE TRABAJO LOCAL (NO LA MAIN LOCAL). Localmente, habrá dos ramas, en la que uno trabajo y la main (en la cual se descargarán los cambios desde remoto). Lo que se debe hacer es sincronizar el contenido remoto con el local y unir con un "merge" el contenido de las ramas. Eo comando git para correr sobre una terminal bash es:
+   ```bash
+   python src/pipeline.py --base dataset/p10 --salida reports
+   ```
 
-“git branch backup-nombreramabackup nombre-ramalocal”
+   Los resultados y las decisiones están en la sección [Modelado y evaluación](#modelado-y-evaluación) de este README y en el notebook `06`.
 
-Se crea un backup de la historia del commit de la rama local de trabajo (no main)
+## Estado
 
-“git fetch origin” -> se descarga la ultima actualizacion del commit remoto sin modificar la rama actual
+**Sprint 1:** muestreo, análisis exploratorio y modelado (baseline, modelos y simulación de clientes nuevos) realizados sobre la muestra p10. **Sprint 2:** demo en Streamlit y dashboard. Corte train/test por fecha: el test es del 16 al 22/9/2020 (siete días, la última semana del dataset) y todo lo anterior es entrenamiento; en el modelado, ese entrenamiento se divide en train hasta el 8/9 y validación del 9 al 15/9.
 
-Se podría ejecutar git fetch origin desde main o la rama de trabajo, ya que no modifica los archivos de la rama en la que se está posicionado.
+## Principales hallazgos del EDA
 
-“git merge origin/main --allow-unrelated-histories” -> este comando debe ser ejecutado en la rama de trabajo local
+- **Muestra p10:** 110.252 clientes, 2.226.486 compras y 105.542 artículos, del 20/9/2018 al 22/9/2020, sin días sin compras. Integridad completa entre tablas.
+- **Duplicados:** el 11,96% de las compras son filas repetidas; no se puede confirmar si son varias unidades, distintos talles o devoluciones. No se eliminan: la tabla no tiene talle ni cantidad e incluye compras devueltas, y hay 17.647 filas repetidas que solo difieren en el precio. Borrarlas perdería información posiblemente real y no se puede deshacer; por eso se ofrecen las dos versiones y se elige con el modelo funcionando.
+- **Edad:** 1,10% de vacíos; la distribución tiene dos grupos (alrededor de los 20 a 30 y de los 50 años). Los clientes sin edad compran menos (mediana de 3 compras contra 8). No se imputa en la tabla original: son pocos y en el test solo 7 clientes no tienen edad (ninguno es frío); que falte la edad es informativo y rellenar en silencio taparía esa señal; y cómo imputar depende del algoritmo, por eso se ofrecen tres columnas y cada modelo elige.
+- **Estacionalidad:** las ventas siguen un patrón del hemisferio norte (ropa de baño entre mayo y julio, punto entre septiembre y noviembre), invertido respecto de Argentina.
+- **Cola larga:** los 12 artículos más vendidos suman 1,1% de las ventas y hacen falta 6.290 artículos para cubrir la mitad.
+- **Clientes fríos:** solo 437 clientes del test (10,5%) no tienen compras previas; hace falta simular más fríos ocultando historial (método en [`docs/Controles_de_integridad.md`](docs/Controles_de_integridad.md)).
 
-El comando le dice a git to unir la historia remota main con la rama local de tarbajo
+## Modelado y evaluación
 
-Si hay conflictos, git parará para preguntar qué hacer y aparecerá en la parte superior diferentes opciones:
+### Modelos evaluados
 
-•  Accept Current Change
-•  Accept Incoming Change
-•  Accept Both Changes
-•  Compare Changes
+| Tipo | Modelo | Rol |
+| --- | --- | --- |
+| Referencia sin aprendizaje | Popularidad (lo más vendido, con decaimiento temporal) | Vara a superar y recomendación para clientes nuevos |
+| Referencia por reglas | Popularidad por tramo de edad | Primer intento de personalizar a clientes nuevos |
+| No supervisado | Co-compra + recompra (filtrado colaborativo ítem-ítem) | Genera candidatas y señales para el ranker |
+| Supervisado | Ranker con regresión logística y Gradient Boosting | Ordena las candidatas por probabilidad de compra |
 
-Este paso es importante: Si se quiere mantener el contenido local, se debe hacer click en “accept current change”. Si se quiere reemplazar el contenido local opr el remoto, hacer click en “accept incoming change”. Guardar los cambios.
+### Protocolo de validación
 
-Así, el contenido local y remoto están sincronizados con las mismas historias y los commits y merge requests deberían trabajar correctamente y se debería poder relizar la suba de archivos correctamente.
-Si al hacer push, no aparece automaticamente en la pantalla principal del repositorio, se lo puedo realizar de forma manual.
+Partición temporal: entrenamiento hasta el 08/09/2020, validación del 09/09 al 15/09 (todas las elecciones) y test del 16/09 al 22/09 (medición única). Métrica de decisión: **Recall@12**; Accuracy, Precision, F1 y matriz de confusión como diagnóstico. La Accuracy no se usa para elegir porque solo el 0,5% de los pares cliente–prenda son compras.
 
-CÓMO CREAR MERGE REQUESTS DE FORMA MANUAL:
+### Resultados (semana de test)
 
-Ir al repositorio. Seleccionar sobre el menú superior la optión "pull request". Seleccionar "new pull request". Sobre la izquierda habra dos botones. En el que dice "base" se debe seleccioanr "main", donde los cambios serán cargados. En el de la derecha que dice "compare" seleccionar la rama del cual se quiere pasar la información que está viniendo localmente. Luego seleccionar "create merge request". En la siguiente pantalla seguir los pasos de forma tradicional al hacer merge requests.
+- **Modelo seleccionado:** ranker supervisado con Gradient Boosting (+0,40 puntos de Recall@12 sobre la regresión logística, IC 95% de +0,11 a +0,68).
+- **Clientes con historial:** Recall@12 de 2,78% a 7,53% frente a la popularidad actual (IC 95% de la mejora: +3,89 a +5,48 puntos).
+- **Clientes nuevos:** se recomienda la popularidad reciente; desde la primera compra conviene personalizar (notebook `05`).
+- **Señales más importantes:** recompra, co-compra y recencia del cliente.
 
+| Tipo de cliente | Popularidad actual | Modelo final |
+| --- | ---: | ---: |
+| Todos (4.162) | 2,71 | 6,95 |
+| Con historial (3.725) | 2,78 | 7,53 |
+| Nuevos, sin compras previas (437) | 2,07 | 2,04 |
 
+*Recall@12 (%) en la semana de test. Fuente: `reports/resultados_test_optimizado.csv`.*
 
+### Sistema final
+
+Sistema por etapas: popularidad reciente para clientes sin historial y ranker con Gradient Boosting desde la primera compra. El modelo entrenado está en `models/`.
+
+### Notebooks
+
+| Notebook | Contenido |
+| --- | --- |
+| `03_baseline.ipynb` | Baseline, métricas y modelo por edad |
+| `04_pipeline_modelos.ipynb` | Tratamiento de datos, features, co-compra y ranker |
+| `05_simulacion_cold_start.ipynb` | Desde cuántas compras conviene personalizar |
+| `06_metricas_optimizacion_decisiones.ipynb` | Optimización, selección y justificación del modelo |
+
+## Decisiones sobre los datos
+
+**No usamos el código postal.** La propuesta contemplaba simular un mercado nuevo apartando clientes por código postal, pero con estos datos no conviene:
+
+1. Es un hash anonimizado: no tiene significado geográfico ni permite agrupar zonas.
+2. Hay 87.652 códigos distintos para 110.252 clientes y el 82% de los códigos tiene un solo cliente.
+3. Un único código concentra 2.857 clientes (2,6%), unas 136 veces más que el siguiente (21 clientes), y parece un valor por defecto para datos faltantes. Esos clientes se comportan distinto al resto (por ejemplo, 7,6% sin edad contra 0,9%).
+
+Apartar clientes por código postal daría grupos arbitrarios, que no representarían un mercado nuevo. Por eso los clientes fríos se simulan ocultando historial (0, 1 o 2 compras visibles).
+
+Tampoco usamos `FN` y `Active` (66% de vacíos y el vacío de `Active` no se puede interpretar), y no recomendamos usar `club_member_status` ni `fashion_news_frequency`: la tabla de clientes es una foto de un solo momento y puede reflejar información posterior a las compras (*data leakage*).
+
+## Limitaciones
+
+Mercado de origen desconocido (el hemisferio norte se infiere de la estacionalidad); precio sin unidad; sin talle ni cantidad, y la tabla incluye devoluciones; la fecha no tiene hora; evaluación *offline* (solo se registran compras, no lo que vio cada cliente); la muestra es el 10% de los clientes, por lo que las cifras por artículo están infladas respecto del dataset completo. No se trabaja con imágenes.
