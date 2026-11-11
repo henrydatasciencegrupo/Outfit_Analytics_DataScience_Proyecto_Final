@@ -2,7 +2,7 @@
 pipeline.py — Ejecución de punta a punta (reproducible)
 =======================================================
 Lookwise Data Lab · Sistema de recomendación para clientes nuevos de H&M (e-commerce)
-Autora: Margot Huaman Quispe
+Autor: Lookwise Data Lab
 
 Pasos
 -----

@@ -2,7 +2,7 @@
 metricas.py — Métricas de evaluación del sistema de recomendación
 =================================================================
 Lookwise Data Lab · Sistema de recomendación para clientes nuevos de H&M (e-commerce)
-Autora: Margot Huaman Quispe
+Autor: Lookwise Data Lab
 
 Todos los modelos se evalúan con estas mismas funciones (criterio único de comparación).
 

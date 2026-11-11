@@ -2,7 +2,7 @@
 simulacion.py — Simulación de clientes nuevos (cold start simulado)
 ===================================================================
 Lookwise Data Lab · Sistema de recomendación para clientes nuevos de H&M (e-commerce)
-Autora: Margot Huaman Quispe
+Autor: Lookwise Data Lab
 
 Pregunta de negocio
 -------------------

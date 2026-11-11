@@ -1,0 +1,4 @@
+﻿Accuracy,Balanced accuracy,Recall,Precision,F1,ROC-AUC,PR-AUC,Umbral
+0.76323,0.66079,0.55733,0.01149,0.02251,0.73688,0.03114,"0,5"
+0.98757,0.57219,0.1527,0.08271,0.1073,0.73688,0.03114,0.891 (mejor F1 en validación)
+0.99511,0.5,0.0,0.0,0.0,0.5,0.00489,Siempre 'no compra'

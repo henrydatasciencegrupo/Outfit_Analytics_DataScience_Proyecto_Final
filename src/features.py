@@ -2,7 +2,7 @@
 features.py — Pipeline de ingeniería de características
 =======================================================
 Lookwise Data Lab · Sistema de recomendación para clientes nuevos de H&M (e-commerce)
-Autora: Margot Huaman Quispe
+Autor: Lookwise Data Lab
 
 Propósito
 ---------
@@ -143,4 +143,4 @@ if __name__ == "__main__":
     for nombre, tabla in feats.items():
         tabla.to_parquet(f"{args.salida}/{nombre}.parquet", index=False)
         print(f"{nombre:<10} {tabla.shape}  -> {args.salida}/{nombre}.parquet")
-    print("Sin fuga de información:", "✅" if chequeo_sin_leakage(trans, hasta, feats) else "❌")
+    print("Sin fuga de información:", "Sí" if chequeo_sin_leakage(trans, hasta, feats) else "No")

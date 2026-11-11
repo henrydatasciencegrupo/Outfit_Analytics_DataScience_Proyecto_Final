@@ -1,0 +1,18 @@
+﻿Variable,Columna,Caída de PR-AUC,Desvío
+El cliente ya compró la prenda,ya_lo_compro,0.08377,0.00319
+Puntaje de co-compra,puntaje_cocompra,0.08176,0.0048
+Días desde su última compra,dias_desde_ultima,0.03187,0.00355
+Ranking por co-compra,rank_cocompra,0.02601,0.00124
+Compras previas del cliente,n_compras,0.01259,0.00359
+"Ventas de la prenda, 7 días",ventas_7d,0.01037,0.00273
+"Ventas en su tramo de edad, 7 días",ventas_tramo_7d,0.00778,0.00185
+Frecuencia de compra del cliente,compras_por_dia_activo,0.00749,0.00145
+Precio de la prenda,precio_articulo,0.00701,0.00149
+"Ventas de la prenda, 30 días",ventas_30d,0.00658,0.00137
+Afinidad con el grupo de producto,afinidad_grupo,0.0045,0.00155
+Antigüedad de la prenda,dias_desde_primera_venta,0.00325,0.00078
+Edad del cliente,age,0.00053,0.00033
+Edad no informada,edad_faltante,0.0,0.0
+Ranking de popularidad en su tramo de edad,rank_edad,-8e-05,0.00064
+Tendencia de ventas de la prenda,tendencia,-0.00058,0.00028
+Ranking de popularidad general,rank_pop,-0.00135,0.00069

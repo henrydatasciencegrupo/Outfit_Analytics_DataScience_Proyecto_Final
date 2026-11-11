@@ -1,0 +1,3 @@
+﻿Segmento,Clientes,Diferencia Recall@12 (puntos),IC 95% inferior,IC 95% superior,Conclusión
+Con historial,3725,4.75,3.89,5.48,Mejora significativa
+Nuevos,437,-0.03,-0.09,0.0,Sin diferencia significativa
