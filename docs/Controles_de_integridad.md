@@ -1,15 +1,15 @@
 # Muestreo y controles de integridad de los datos (H&M, Lookwise Data Lab)
 
-> Documentación del **muestreo y la calidad de los datos**: anexo de apoyo al EDA, no un análisis exploratorio. Los hallazgos del EDA están en `EDA_Lookwise.md` y en el notebook `02_EDA_unificado_p10.ipynb`; el método para obtener la muestra, en `dataset_README.md`.
+> Documentación del **muestreo y la calidad de los datos**: anexo de apoyo al EDA, no un análisis exploratorio. Los hallazgos del EDA están en `README_EDA.md` y en el notebook `02_EDA_unificado_p10.ipynb`; el método para obtener la muestra, en `dataset_README.md`.
 
-Registro de lo que se verificó con los datos y lo que falta verificar. Se actualiza a medida que se controlan los datos. Última actualización: 2026-11-04 (cierre del EDA de `trans`, `cust` y `art` sobre p10).
+Registro de lo que se verificó con los datos y de las decisiones que se tomaron. Última actualización: 2026-11-11 (decisiones del grupo cerradas; el EDA está en `README_EDA.md`).
 
 ## Decisiones tomadas
 
 - **Solo canal 2 (online):** confirmado por todo el grupo (2026-11-02).
-- **Tamaño de la muestra:** se empieza con **p10 como muestra oficial** y p5 como respaldo (misma estructura). Se confirma con el grupo **antes de arrancar el EDA**, con una celda de prueba que corre cada integrante en su compu. Todos usan **la misma** muestra. Una vez iniciado el EDA **no se cambia de tamaño**, porque invalida la comparación de lo ya hecho. Si a alguien se le cuelga, primero se hacen pruebas para que funcione (cerrar aplicaciones, cargar menos columnas, consultar el Parquet con DuckDB); si no alcanza, baja **todo el grupo** a p5. Ver "Elección del tamaño". Faltan los resultados de la celda de prueba de los compañeros.
-- **EDA:** lo hace cada integrante por su cuenta y después se compara (ver "Cómo se organiza el EDA").
-- **Corte train/test (provisorio, a confirmar con el grupo):** test = **16/9/2020 a 22/9/2020** (últimos 7 días del dataset); train = todo lo anterior (hasta el 15/9/2020), sin solapamiento. Es la misma regla del esquema de evaluación original del dataset (7 días posteriores al fin del entrenamiento). Septiembre 2020 **no** está incompleto: el dataset va del 20/9/2018 al 22/9/2020 (734 días, sin días faltantes) y los últimos días tienen entre 2.482 y 2.552 compras diarias en total. Desde el corte, la exploración que depende de fechas o artículos se hace solo con el train (para evitar leakage); los controles de calidad usan los datos completos.
+- **Tamaño de la muestra:** se empieza con **p10 como muestra oficial** y p5 como respaldo (misma estructura). Todos usan **la misma** muestra y no se cambió de tamaño una vez iniciado el EDA, porque invalidaría la comparación de lo ya hecho. Ver "Elección del tamaño".
+- **EDA:** cada integrante lo hizo por su cuenta y después se unificó en el notebook `02_EDA_unificado_p10.ipynb`.
+- **Corte train/test (adoptado por el grupo):** test = **16/9/2020 a 22/9/2020** (últimos 7 días del dataset); train = todo lo anterior (hasta el 15/9/2020), sin solapamiento. Es la misma regla del esquema de evaluación original del dataset (7 días posteriores al fin del entrenamiento). Septiembre 2020 **no** está incompleto: el dataset va del 20/9/2018 al 22/9/2020 (734 días, sin días faltantes) y los últimos días tienen entre 2.482 y 2.552 compras diarias en total. Desde el corte, la exploración que depende de fechas o artículos se hace solo con el train (para evitar leakage); los controles de calidad usan los datos completos.
 
 ## Verificado sobre los archivos originales
 
@@ -113,7 +113,7 @@ Lectura: por cantidad de artículos el 5% pierde alrededor del 30% de los artíc
 
 ## Elección del tamaño (p5 o p10)
 
-**Tamaño de la semana de test con el corte provisorio del 16/9/2020** (test = 16 a 22/9; recalculado 2026-11-03, reemplaza la tabla anterior que usaba el 15/9):
+**Tamaño de la semana de test con el corte del 16/9/2020** (test = 16 a 22/9; recalculado 2026-11-03, reemplaza la tabla anterior que usaba el 15/9):
 
 | | p5 | p10 |
 |---|---|---|
@@ -142,72 +142,57 @@ Para comparar modelos sobre todos los clientes alcanzan los ~2.100 clientes del 
 
 Lectura: el costo del 10% es bajo en estas pruebas. Con el doble de datos, las repeticiones de pares se triplican, lo que mejora la señal de co-compra (que necesita ver pares repetidos). Aun así, más del 80% de los pares aparece una sola vez: la matriz de co-compra es muy dispersa (en p5, los pares presentes son alrededor del 1,2% de las combinaciones posibles de sus 68.978 artículos), así que cualquier modelo de co-compra necesita un formato disperso. Limitaciones: la prueba cuenta todo lo que un cliente compró en dos años como un solo carrito (un modelo real probablemente use ventanas más cortas); mide solo co-compra; el tiempo de entrenamiento de los modelos de verdad no se conoce hasta el Sprint 2; el tamaño de la tabla unida crece si se unen las 25 columnas de `articles`; no se midió el pico de memoria de la unión.
 
-**Propuesta de justificación:**
+**Justificación:**
 
-> Se generaron dos muestras (5% y 10%). Se elige el 10% como principal porque duplica los clientes fríos reales de la semana de test (de 232 a 437), triplica las repeticiones de pares de artículos que necesita co-compra y tiene un costo bajo medido (unión en unos 4 segundos y 930 MB; prueba de co-compra en 11 segundos). El 5% queda como respaldo para quien tenga una compu justa; si hay problemas de memoria o se cuelga, se usa p5 (misma estructura). Los clientes fríos simulados (recortando el historial) complementan a los reales, pero no los reemplazan.
+> Se generaron dos muestras (5% y 10%). Se elige el 10% como principal porque duplica los clientes fríos reales de la semana de test (de 232 a 437), triplica las repeticiones de pares de artículos que necesita co-compra y tiene un costo bajo medido (unión en unos 4 segundos y 930 MB; prueba de co-compra en 11 segundos). El 5% queda como respaldo (misma estructura). Los clientes fríos simulados (recortando el historial) complementan a los reales, pero no los reemplazan.
 
-**Criterio para el grupo:**
+Si en el Sprint 2 un modelo pesa demasiado, se optimiza el código; el p5 (contenido en el p10) puede usarse solo para pruebas rápidas, pero la evaluación final se hace sobre el p10.
 
-1. Cada integrante corre la celda de prueba (RAM + carga, unión y top 12 de p10), con sus programas habituales abiertos, y le pasa al responsable del EDA las dos líneas de salida.
-2. Si a alguien le da error de memoria, tarda más de unos 3 minutos (umbral propuesto, no medido) o se le cuelga la compu, avisa y se hacen pruebas para que funcione (cerrar aplicaciones, cargar menos columnas, consultar el Parquet con DuckDB).
-3. Si no se logra, baja **todo el grupo** a p5: todos trabajan con la misma muestra.
-4. Se decide **antes de arrancar el EDA** y después no se cambia. Si en el Sprint 2 un modelo pesa demasiado, se optimiza el código; el p5 (contenido en el p10) puede usarse solo para pruebas rápidas, pero la evaluación final se hace sobre el p10.
-
-## Clientes fríos simulados (método propuesto)
+## Clientes fríos simulados (método)
 
 - Idea: ocultarle al modelo parte del historial de clientes que ya tienen compras, no borrar datos. Ejemplo: una clienta con 12 compras antes del corte y 2 compras en la semana de test. Evaluación normal: el modelo ve las 12. Simulación de fría: ve solo su primera compra (o 0, o 2) y se compara con las mismas 2 compras del test.
 - Con el corte del 16/9 hay 1.861 clientes en p5 y 3.725 en p10 que compran en la semana de test y ya tenían historial; cada uno puede ser un caso de frío con 0, 1 o 2 compras visibles.
 - Condición: las compras ocultas tampoco se pueden usar para entrenar (si no, hay leakage).
 - Limitación a declarar: un cliente con historial largo conserva gustos de cliente frecuente aunque se le oculte el historial; no es idéntico a un cliente realmente nuevo. Se evalúan y se informan por separado los fríos reales y los simulados.
-- Momento: la decisión del método se anota en el EDA; la lista de clientes y compras ocultas se arma en la preparación de datos con el corte fijado; la evaluación es el final del Sprint 1 y el Sprint 2. Para Demo 1 alcanza con el método definido y justificado. Bonus: al probar con 0, 1 y 2 compras visibles se puede mostrar cómo cambia el resultado según el historial.
-- Simular un mercado nuevo usando `postal_code` **no es viable** (códigos casi únicos y un código dominante que parece valor por defecto); la justificación está en el README. El criterio alternativo está pendiente.
-
-## Cómo se organiza el EDA
-
-El grupo acordó que todos hacen el EDA por su cuenta y después comparan. Para que la comparación sirva y no se repita trabajo:
-
-- **Mismos archivos:** todos usan el mismo tamaño de muestra.
-- **Misma lista de preguntas:** por ejemplo, ventas por mes, compras por cliente, artículos más vendidos, edad, clientes fríos y qué hacer con marzo-abril 2020. Cada una responde la lista completa por su cuenta.
-- **Un responsable por tema:** además, cada integrante lidera una de las preguntas (se anota en Trello), para que al comparar alguien se haga cargo de cada punto.
-- **Fecha fija para comparar:** propuesta, domingo 8/11, con un único notebook final donde se junta lo acordado.
-- **Decisiones que afectan a todos** (fecha de corte, meses atípicos, tratamiento de la edad vacía) se toman en grupo y se anotan en este documento, no individualmente.
-
-Riesgo a vigilar: si cada una decide por su cuenta, el baseline y las métricas dan distinto y no se pueden comparar.
+- Los resultados de la simulación (0, 1 o 2 compras visibles) están en `notebooks/05_simulacion_cold_start.ipynb` y en la sección "Modelado y evaluación" del `README.md`.
+- Simular un mercado nuevo usando `postal_code` **no es viable** (códigos casi únicos y un código dominante que parece valor por defecto); la justificación está en el README. Por eso los clientes fríos se simulan ocultando historial (0, 1 o 2 compras visibles).
 
 ## Resultados del EDA relevantes para estos controles (p10, train, 2026-11-03)
 
-- Duplicados (mismo día, cliente y artículo): 266.398 filas (11,96%); 284.045 ignorando el precio; 17.082 combinaciones día-cliente-artículo con más de un precio. Más frecuentes en Swimwear (16,8%), Socks & Tights (14,7%) y Lower (13,9%). Se conservan (ver propuestas).
+- Duplicados: 266.398 filas completamente repetidas (11,96%); 284.045 (12,76%) si se ignora el precio, es decir, misma prenda, cliente y día; 17.082 combinaciones día-cliente-artículo con más de un precio. Más frecuentes en Swimwear (16,8%), Socks & Tights (14,7%) y Lower (13,9%). Se conservan (ver "Decisiones sobre los datos").
 - Compras por cliente (train): mediana 7, media 20,1, p99 180, máximo 1.068; 11,3% con una sola compra; 41,8% con 5 o menos.
 - Artículos (train): top 12 = 1,1% de las ventas; top 1.000 = 18,9%; 6.290 cubren el 50%; 11.591 vendidos una sola vez; 27.762 (26,3%) sin ventas en el train. El top 12 del train pesa solo 0,92% de las compras del test.
 - Temporalidad: pico de abril 2020 (4.459 compras/día) y de junio 2019 (4.480/día); día récord 11/4/2020 (16.104); diciembre es el mes más bajo; el miércoles concentra 16,1%. La estacionalidad corresponde al **hemisferio norte** (Swimwear 17,6% en mayo / 16,3% en junio / 15,6% en julio contra 1,7% en noviembre; Knitwear 16,0% en noviembre). Va a las limitaciones por la inversión de estaciones respecto de Argentina.
 - Precios: el 0,1% más caro son Coat, Jacket, Dress y Sweater; las medianas de Coat (0,0949) y Jacket (0,0678) son muy superiores a T-shirt/Socks (0,0135). Los outliers de precio se conservan.
 - Mezcla de edad e índice: Divided baja de 36,8% a 18,6% con la edad; Ladieswear sube de 56,5% a 71,2%.
 
-## Propuestas para confirmar con el grupo (no son decisiones todavía)
+## Decisiones sobre los datos
 
-1. **Corte:** test 16 a 22/9/2020, train hasta el 15/9.
-2. **Meses atípicos (marzo a mayo 2020):** se conservan en train; el test no cae en ellos. Opcional: prueba de estrés reportada aparte.
-3. **Duplicados:** se conservan filas originales; se ofrece además una versión colapsada (cantidad, precio mínimo y máximo).
-4. **Edad vacía:** no se imputa en la tabla original; se agregan `edad_faltante`, `tramo_edad` (con categoría "sin edad") y `edad_relleno` (31, la mediana).
-5. **Variables de `customers`:** `FN`, `Active` y `postal_code` se conservan pero no se usan; `club_member_status` y `fashion_news_frequency` se recomienda no usarlas (leakage y poca señal).
+El detalle de cada tratamiento está en `reports/tratamiento_datos.csv`.
+
+1. **Corte:** test 16 a 22/9/2020, train hasta el 15/9 (en el modelado, train hasta el 8/9 y validación del 9 al 15/9).
+2. **Meses atípicos (marzo a mayo 2020):** se conservan en train; el test no cae en ellos.
+3. **Duplicados:** se conservan las filas originales (pueden ser varias unidades); la versión colapsada queda disponible en el paquete de modelado.
+4. **Edad vacía:** no se imputa en la tabla original; se agregan `edad_faltante`, `tramo_edad` (con categoría "sin edad") y `edad_relleno` (31, la mediana). El ranker usa `age` y `edad_faltante`.
+5. **Variables de `customers`:** solo se usa la edad. `FN`, `Active`, `postal_code`, `club_member_status` y `fashion_news_frequency` se excluyen (foto de un solo momento, riesgo de leakage y poca señal).
 6. **Valores atípicos (edad >84, precios altos, clientes con muchas compras):** no se eliminan.
-7. **Artículos del test ausentes en el train:** decidir si se evalúan igual (sin posibilidad de acierto para modelos de co-compra) o se reportan por separado.
-8. **Definición de baseline:** historial completo contra ventana reciente (tarea de quien modela).
-9. **Simulación de mercado nuevo:** criterio alternativo a `postal_code`.
-10. **Verificación pendiente:** diccionario de datos oficial del dataset.
+7. **Baseline:** se resolvió en el modelado: popularidad con decaimiento temporal (ver el `README.md` y el notebook `06`).
+8. **Mercado nuevo:** no se simula con `postal_code`; los fríos se simulan ocultando historial.
+9. **Diccionario de datos:** no hay un diccionario oficial de columnas; las definiciones y sus fuentes están en `docs/dataset_README.md` y `docs/glosario_variables.md`.
+
+**Abierto:** artículos del test ausentes en el train (el 9,4% de las compras del test, una cota por el muestreo): ningún modelo basado en historial puede recomendarlos; decidir si se reportan aparte.
 
 ## Paquete de modelado (p10)
 
-Carpeta local `p10_modelado` (no se sube al repositorio por su tamaño), pensada para quien entrena los modelos: `train.parquet`, `train_colapsado.parquet`, `test.parquet`, `test_verdad.parquet`, `customers.parquet` (con las columnas de edad nuevas), `articles.parquet`, `evaluar.py` (MAP@12), `README_modelado.md` y `00_verificar_datos.ipynb`. Reglas: el test solo se usa para evaluar, las estadísticas se calculan solo con el train, no se usan `FN`, `Active` ni `postal_code`, no se eliminan filas ni outliers. El EDA completo está en el notebook `EDA_unificado_p10.ipynb`.
+Carpeta local `p10_modelado` (no se sube al repositorio por su tamaño), pensada para quien entrena los modelos: `train.parquet`, `train_colapsado.parquet`, `test.parquet`, `test_verdad.parquet`, `customers.parquet` (con las columnas de edad nuevas), `articles.parquet`, `evaluar.py` (MAP@12), un `README_modelado.md` propio de esa carpeta (no el de `docs/`) y `00_verificar_datos.ipynb`. Reglas: el test solo se usa para evaluar, las estadísticas se calculan solo con el train, no se usan `FN`, `Active` ni `postal_code`, no se eliminan filas ni outliers. El EDA completo está en el notebook `02_EDA_unificado_p10.ipynb`.
 
 ## Pendiente
 
-- Recibir el resultado de la celda de prueba de cada integrante y confirmar el tamaño de muestra (los resultados de los compañeros para p10 todavía no están).
-- Confirmar en grupo las propuestas de arriba.
-- Sprint 2: medir el costo real de entrenar los modelos (todavía desconocido).
+- Sprint 2: medir el costo real de entrenar los modelos.
+- Decidir cómo se reportan los artículos del test ausentes en el train.
 - Configurar colaboradores en el repositorio de GitHub (es público: no se suben datos).
 
 ## Notas
 
 - Septiembre 2020 **no** está incompleto (verificado el 2026-11-03 con conteos diarios): no hay días faltantes y el nivel diario es estable.
-- Marzo a mayo 2020 son meses atípicos (pico de abril: 4.459 compras/día): decidir cómo tratarlos. Se pueden usar en train; el test principal va en la última semana. Descartar marzo a septiembre 2020 sacaría el 29% de las filas online y el período más reciente: no se recomienda como opción por defecto.
+- Marzo a mayo 2020 son meses atípicos (pico de abril: 4.459 compras/día): decisión del grupo: se conservan en el entrenamiento; el test principal va en la última semana. Descartar marzo a septiembre 2020 sacaría el 29% de las filas online y el período más reciente: no se recomienda como opción por defecto.
