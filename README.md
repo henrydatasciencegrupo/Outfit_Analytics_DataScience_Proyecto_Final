@@ -11,21 +11,42 @@ H&M, multinacional sueca de moda, prevé abrir su primera tienda en Argentina en
 
 ## Datos
 
-Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repositorio: ver [`docs/dataset_README.md`](docs/dataset_README.md) para obtenerlo, ver las fuentes y referencias y reproducir la muestra del 10% (p10) que usamos. El significado de cada variable está en [`docs/glosario_variables.md`](docs/glosario_variables.md).
+Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repositorio: ver [`docs/dataset.md`](docs/dataset.md) para obtenerlo, ver las fuentes y referencias y reproducir la muestra del 10% (p10) que usamos. El significado de cada variable está en [`docs/glosario_variables.md`](docs/glosario_variables.md).
 
 ## Estructura
 
 ```text
-notebooks/        muestreo, EDA (02), baseline (03), modelos (04), simulación de clientes nuevos (05)
-                  y métricas, optimización y decisiones del modelo (06)
-src/              código del pipeline (datos, features, métricas, modelos, optimización, simulación)
-models/           modelo final entrenado y su configuración
-reports/          resultados en CSV y gráficos
-docs/             documentación por tema: EDA, datos y fuentes, controles de la muestra, glosario de variables
-requirements.txt
+.
+├── notebooks/                    se ejecutan en orden, desde la carpeta notebooks/
+│   ├── 01_muestreo_p10.ipynb               muestra p10 del 10% de clientes y sus controles
+│   ├── 02_EDA_unificado_p10.ipynb          EDA final del equipo (con salidas)
+│   ├── 02_EDA_individual_p10.ipynb         pre-exploración individual
+│   ├── 03_baseline.ipynb                   baseline: lo más vendido
+│   ├── 04_pipeline_modelos.ipynb           features, modelos y comparación
+│   ├── 05_simulacion_cold_start.ipynb      desde cuántas compras conviene personalizar
+│   └── 06_metricas_optimizacion_decisiones.ipynb   métricas, optimización y modelo final
+├── src/                          código del pipeline, importado por los notebooks
+│   ├── datos.py  features.py  metricas.py  modelos.py
+│   ├── optimizacion.py  simulacion.py
+│   └── pipeline.py                         ejecución de punta a punta
+├── models/                       modelo final entrenado, su configuración y recomendaciones de test
+├── reports/                      resultados en CSV (insumo del dashboard)
+│   └── figures/                            gráficos de los notebooks (01 a 27) y de la documentación (eda_*, modelado_*)
+├── app/                          demo en Streamlit (Sprint 2)
+├── dashboard/                    dashboard de Power BI (Sprint 2)
+├── docs/                         documentación por tema
+│   ├── dataset.md                          cómo obtener los datos, fuentes y estructura local
+│   ├── controles_integridad.md             controles de la muestra y calidad de los datos
+│   ├── glosario_variables.md               significado de cada variable
+│   ├── eda.md                              hallazgos y decisiones del EDA
+│   ├── modelado.md                         modelos, validación y resultados
+│   └── solucion_errores_git.md             problemas frecuentes con Git y VS Code
+├── dataset/p10/                  datos locales (no se suben: ver docs/dataset.md)
+├── requirements.txt
+└── README.md
 ```
 
-En `notebooks/`, `02_EDA_unificado_p10.ipynb` es el EDA final (con salidas) y `02_EDA_individual_p10.ipynb`, la pre-exploración individual.
+Todos los notebooks leen los datos desde `../dataset/p10` (ruta relativa a `notebooks/`), así que basta con dejar los Parquet en esa carpeta y ejecutar **Run All**, sin editar rutas.
 
 ## Cómo reproducirlo
 
@@ -36,8 +57,8 @@ En `notebooks/`, `02_EDA_unificado_p10.ipynb` es el EDA final (con salidas) y `0
    ```
 
 2. Conseguir los datos, de **una de estas dos formas**:
-   - **Desde cero:** aceptar las condiciones de uso del dataset (ver [`docs/dataset_README.md`](docs/dataset_README.md)), descargar los tres CSV y correr `notebooks/muestreo_p10_documentado.ipynb` (antes hay que poner en la celda de rutas dónde guardaste los CSV). Genera la muestra p10 con una semilla fija, así que todas obtienen la misma.
-   - **Con la muestra ya armada:** pedirle al equipo los tres archivos Parquet de la p10 (unos 63 MB) y dejarlos en `dataset/p10/` (esa carpeta no se sube al repositorio). Ver la estructura en [`docs/dataset_README.md`](docs/dataset_README.md).
+   - **Desde cero:** aceptar las condiciones de uso del dataset (ver [`docs/dataset.md`](docs/dataset.md)), descargar los tres CSV y correr `notebooks/01_muestreo_p10.ipynb` (antes hay que poner en la celda de rutas dónde guardaste los CSV). Genera la muestra p10 con una semilla fija, así que todas obtienen la misma.
+   - **Con la muestra ya armada:** pedirle al equipo los tres archivos Parquet de la p10 (unos 63 MB) y dejarlos en `dataset/p10/` (esa carpeta no se sube al repositorio). Ver la estructura en [`docs/dataset.md`](docs/dataset.md).
 3. **Correr el EDA:** abrir `notebooks/02_EDA_unificado_p10.ipynb` desde la carpeta `notebooks/` y ejecutar todas las celdas.
 4. **Correr el modelado:** ejecutar los notebooks `03`, `04`, `05` y `06` en ese orden, o el pipeline completo desde la carpeta del repositorio:
 
@@ -58,7 +79,7 @@ En `notebooks/`, `02_EDA_unificado_p10.ipynb` es el EDA final (con salidas) y `0
 - **Edad:** 1,10% de vacíos; la distribución tiene dos grupos (alrededor de los 20 a 30 y de los 50 años). Los clientes sin edad compran menos (mediana de 3 compras contra 8). No se imputa en la tabla original: son pocos y en el test solo 7 clientes no tienen edad (ninguno es frío); que falte la edad es informativo y rellenar en silencio taparía esa señal; y cómo imputar depende del algoritmo, por eso se ofrecen tres columnas y cada modelo elige.
 - **Estacionalidad:** las ventas siguen un patrón del hemisferio norte (ropa de baño entre mayo y julio, punto entre septiembre y noviembre), invertido respecto de Argentina.
 - **Cola larga:** los 12 artículos más vendidos suman 1,1% de las ventas y hacen falta 6.290 artículos para cubrir la mitad.
-- **Clientes fríos:** solo 437 clientes del test (10,5%) no tienen compras previas; hace falta simular más fríos ocultando historial (método en [`docs/Controles_de_integridad.md`](docs/Controles_de_integridad.md)).
+- **Clientes fríos:** solo 437 clientes del test (10,5%) no tienen compras previas; hace falta simular más fríos ocultando historial (método en [`docs/controles_integridad.md`](docs/controles_integridad.md)).
 
 ## Modelado y evaluación
 
@@ -101,7 +122,7 @@ Sistema por etapas: popularidad reciente para clientes sin historial y ranker co
 | `03_baseline.ipynb` | Baseline, métricas y modelo por edad |
 | `04_pipeline_modelos.ipynb` | Tratamiento de datos, features, co-compra y ranker |
 | `05_simulacion_cold_start.ipynb` | Desde cuántas compras conviene personalizar |
-| `06_metricas_optimizacion_decisiones.ipynb` | Optimización, selección y justificación del modelo |
+| `06_metricas_optimizacion_decisiones.ipynb` | **Final:** optimización, selección y justificación del modelo (los 03 a 05 son etapas previas) |
 
 ## Decisiones sobre los datos
 
@@ -118,3 +139,15 @@ Tampoco usamos `FN` y `Active` (66% de vacíos y el vacío de `Active` no se pue
 ## Limitaciones
 
 Mercado de origen desconocido (el hemisferio norte se infiere de la estacionalidad); precio sin unidad; sin talle ni cantidad, y la tabla incluye devoluciones; la fecha no tiene hora; evaluación *offline* (solo se registran compras, no lo que vio cada cliente); la muestra es el 10% de los clientes, por lo que las cifras por artículo están infladas respecto del dataset completo. No se trabaja con imágenes.
+
+## Equipo
+
+**Lookwise Data Lab**, Grupo 1 de la cohorte DSPT-07 de Soy Henry.
+
+| Integrante | Rol en el proyecto | LinkedIn |
+| --- | --- | --- |
+| María Isabel Fernández | Muestreo, EDA y documentación | [LinkedIn](https://www.linkedin.com/in/isabelfernandez-ai-data) |
+| Florencia Dinelli | Muestreo, EDA y README | [LinkedIn](https://www.linkedin.com/in/florencia-dinelli-3672253b9) |
+| Ignacio Sironi | Baseline y estructura del repositorio | [LinkedIn](https://www.linkedin.com/in/ignacio-sironi-626464113) |
+| Margot Huaman Quispe | Modelado, métricas, optimización y estructura del repositorio | [LinkedIn](https://www.linkedin.com/in/margothuamaneconomista) |
+| Alejandra Blandón | Simulación, conclusiones y dashboard | [LinkedIn](https://www.linkedin.com/in/alejandra-blandon-analyst) |
