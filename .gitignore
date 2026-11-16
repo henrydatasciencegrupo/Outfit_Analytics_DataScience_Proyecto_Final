@@ -209,9 +209,3 @@ $RECYCLE.BIN/
 /p10_modelado/
 *.parquet
 *.zip
-
-# Datos locales (muestras Parquet y paquetes de modelado): no subir
-/dataset/
-/p10_modelado/
-*.parquet
-*.zip

@@ -1,8 +1,8 @@
 # Muestreo y controles de integridad de los datos (H&M, Lookwise Data Lab)
 
-> Documentación del **muestreo y la calidad de los datos**: anexo de apoyo al EDA, no un análisis exploratorio. Los hallazgos del EDA están en `README_EDA.md` y en el notebook `02_EDA_unificado_p10.ipynb`; el método para obtener la muestra, en `dataset_README.md`.
+> Documentación del **muestreo y la calidad de los datos**: anexo de apoyo al EDA, no un análisis exploratorio. Los hallazgos del EDA están en `eda.md` y en el notebook `02_EDA_unificado_p10.ipynb`; el método para obtener la muestra, en `dataset.md`.
 
-Registro de lo que se verificó con los datos y de las decisiones que se tomaron. Última actualización: 2026-11-11 (decisiones del grupo cerradas; el EDA está en `README_EDA.md`).
+Registro de lo que se verificó con los datos y de las decisiones que se tomaron. Última actualización: 2026-11-11 (decisiones del grupo cerradas; el EDA está en `eda.md`).
 
 ## Decisiones tomadas
 
@@ -178,13 +178,13 @@ El detalle de cada tratamiento está en `reports/tratamiento_datos.csv`.
 6. **Valores atípicos (edad >84, precios altos, clientes con muchas compras):** no se eliminan.
 7. **Baseline:** se resolvió en el modelado: popularidad con decaimiento temporal (ver el `README.md` y el notebook `06`).
 8. **Mercado nuevo:** no se simula con `postal_code`; los fríos se simulan ocultando historial.
-9. **Diccionario de datos:** no hay un diccionario oficial de columnas; las definiciones y sus fuentes están en `docs/dataset_README.md` y `docs/glosario_variables.md`.
+9. **Diccionario de datos:** no hay un diccionario oficial de columnas; las definiciones y sus fuentes están en `docs/dataset.md` y `docs/glosario_variables.md`.
 
 **Abierto:** artículos del test ausentes en el train (el 9,4% de las compras del test, una cota por el muestreo): ningún modelo basado en historial puede recomendarlos; decidir si se reportan aparte.
 
 ## Paquete de modelado (p10)
 
-Carpeta local `p10_modelado` (no se sube al repositorio por su tamaño), pensada para quien entrena los modelos: `train.parquet`, `train_colapsado.parquet`, `test.parquet`, `test_verdad.parquet`, `customers.parquet` (con las columnas de edad nuevas), `articles.parquet`, `evaluar.py` (MAP@12), un `README_modelado.md` propio de esa carpeta (no el de `docs/`) y `00_verificar_datos.ipynb`. Reglas: el test solo se usa para evaluar, las estadísticas se calculan solo con el train, no se usan `FN`, `Active` ni `postal_code`, no se eliminan filas ni outliers. El EDA completo está en el notebook `02_EDA_unificado_p10.ipynb`.
+Carpeta local `p10_modelado` (no se sube al repositorio por su tamaño), pensada para quien entrena los modelos: `train.parquet`, `train_colapsado.parquet`, `test.parquet`, `test_verdad.parquet`, `customers.parquet` (con las columnas de edad nuevas), `articles.parquet`, `evaluar.py` (MAP@12), un `modelado.md` propio de esa carpeta (no el de `docs/`) y `00_verificar_datos.ipynb`. Reglas: el test solo se usa para evaluar, las estadísticas se calculan solo con el train, no se usan `FN`, `Active` ni `postal_code`, no se eliminan filas ni outliers. El EDA completo está en el notebook `02_EDA_unificado_p10.ipynb`.
 
 ## Pendiente
 
