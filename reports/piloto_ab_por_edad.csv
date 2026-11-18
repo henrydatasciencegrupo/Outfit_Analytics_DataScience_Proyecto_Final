@@ -1,0 +1,7 @@
+﻿Tramo de edad,Clientes,Conversión modelo (%),Conversión control (%),Diferencia (puntos),IC bajo,IC alto,Mejora significativa
+25-34,1291,15.69,7.32,8.36,4.92,11.8,Sí
+35-44,462,14.22,6.09,8.14,2.68,13.59,Sí
+45-54,775,12.02,4.74,7.28,3.46,11.1,Sí
+55+,527,12.13,7.06,5.07,0.08,10.07,Sí
+<25,1100,14.8,6.84,7.96,4.35,11.57,Sí
+sin edad,7,20.0,0.0,20.0,-15.06,55.06,No concluyente
