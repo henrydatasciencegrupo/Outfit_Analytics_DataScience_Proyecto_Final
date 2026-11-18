@@ -10,11 +10,14 @@ Relación entre KPIs de negocio y métricas
 -----------------------------------------
 | KPI de negocio                           | Métrica            | Pregunta que responde                              |
 |------------------------------------------|--------------------|----------------------------------------------------|
-| Experiencia (métrica principal)          | MAP@12             | ¿Acertamos y pusimos lo correcto arriba?           |
-| Conversión de clientes nuevos            | Hit Rate@12        | ¿Qué % de clientes compró algo de la lista?        |
-| Productos por pedido                     | Recall@12          | ¿Qué parte de su compra anticipamos?               |
+| Productos por pedido (métrica de decisión)| Recall@12         | ¿Qué parte de su compra anticipamos?               |
+| Conversión                               | Hit Rate@12        | ¿Qué % de clientes compró algo de la lista?        |
+| Experiencia (desempate)                  | MAP@12             | ¿Acertamos y pusimos lo correcto arriba?           |
 | Aprovechamiento de la vitrina            | Precision@12       | ¿Qué parte de los 12 lugares se aprovechó?         |
 | Salud del catálogo                       | Prendas distintas  | ¿A cuántas prendas damos visibilidad?              |
+
+Los notebooks 03 a 05 compararon con MAP@12; desde el notebook 06 decide Recall@12
+(ver docs/plan_validacion.md). La elección del modelo es la misma con las dos métricas.
 """
 import numpy as np
 import pandas as pd
