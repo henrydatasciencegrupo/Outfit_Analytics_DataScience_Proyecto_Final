@@ -182,6 +182,8 @@ La evaluación offline mide si el modelo **habría acertado** con compras pasada
 
 **Por qué al azar y no por edad:** si el grupo modelo fueran, por ejemplo, solo clientes jóvenes, una diferencia en ventas podría deberse a la edad y no al modelo. El sorteo hace que los dos grupos sean parecidos en todo. Además, en nuestros resultados la edad sola no supera a lo más vendido (hipótesis H1) y casi no pesa en el modelo final. La edad se usa como **control**: se verifica que los dos grupos tengan un reparto de edades parecido (`balance_por_grupo()`) y los resultados se reportan por tramo de edad.
 
+**Alcance por línea de producto (sustituto de la zona geográfica):** los datos no tienen ubicación (el código postal está anonimizado), así que no se puede empezar por una ciudad o una tienda. En su lugar, el piloto puede empezar mostrando la vitrina personalizada **solo en la sección de una línea de producto** (por ejemplo, Divided o Ladieswear) y, dentro de esa sección, repartir a los clientes al azar con el hash. Así se limita el riesgo a una parte del catálogo. Los grupos **no** se arman por línea: si el grupo modelo fueran solo clientes de una línea, la comparación quedaría sesgada por su perfil (por ejemplo, Divided concentra a los clientes más jóvenes). La línea de inicio se elige por **razones de negocio** (volumen de clientes y riesgo), no por la que mejor resultado dio en la simulación: elegirla por el resultado sería acomodar el piloto a los datos. La simulación solo se usa para verificar que el modelo no rinda peor que lo más vendido en esa línea. Como dentro de una línea hay menos clientes, **el tamaño de muestra se recalcula por línea** y el piloto puede durar más semanas; la estimación está en `reports/piloto_tamano_por_linea.csv`.
+
 ### 7.2 Simulación del piloto con la semana de test
 
 El notebook `notebooks/07_piloto_ab_simulado.ipynb` aplica este diseño a los 4.162 clientes de la semana de test: los reparte con `asignar_grupo()`, verifica que los grupos sean comparables por edad y tipo de cliente, le muestra a cada grupo una sola vitrina (modelo final o lo más vendido de 7 días) y aplica la regla de escalado. Como hay pocos clientes, el escenario principal usa un reparto 50/50 y el reparto 10/90 se reporta como la etapa inicial real. Los resultados quedan en `reports/piloto_ab_simulado.csv`, `reports/piloto_ab_por_edad.csv` y `reports/piloto_tamano_muestra.csv`.
@@ -201,6 +203,30 @@ Es una simulación con datos históricos: muestra que el procedimiento funciona,
 - **La regla de escalado se cumple**, incluso en la etapa inicial del 10%: el grupo modelo convierte más del doble que el control y el intervalo no incluye el 0.
 - **Clientes nuevos:** la diferencia no es significativa, como se esperaba: los dos grupos ven una vitrina de popularidad.
 - **Por tramo de edad** (`reports/piloto_ab_por_edad.csv`): el grupo modelo convierte más en todos los tramos con clientes suficientes, con mejoras de +5,1 a +8,4 puntos y significativas en los cinco. El grupo "sin edad" (7 clientes) no permite conclusiones.
+- **Por línea de producto** (`reports/piloto_ab_por_linea.csv`): mide en qué sección de la tienda acierta más el modelo. Sirve como control al elegir por qué línea empezar el piloto real, junto con el tamaño de muestra necesario en cada línea (`reports/piloto_tamano_por_linea.csv`).
+- **Por línea de producto** (resultado): el modelo acierta más que lo más vendido en las cinco líneas y la mejora es significativa en cuatro.
+
+| Línea | Clientes que compraron en la línea | Acierto modelo | Acierto control | Diferencia (IC 95%) |
+|---|---|---|---|---|
+| Ladieswear | 3.213 | 12,14% | 6,95% | +5,19 puntos (+3,18 a +7,21) |
+| Divided | 1.907 | 9,45% | 2,57% | +6,87 puntos (+4,77 a +8,97) |
+| Sport | 310 | 7,06% | 0,00% | +7,06 puntos (+3,21 a +10,91) |
+| Menswear | 288 | 6,58% | 0,00% | +6,58 puntos (+2,64 a +10,52) |
+| Baby/Children | 139 | 2,70% | 0,00% | +2,70 puntos (−0,99 a +6,40), no concluyente |
+
+  En Sport, Menswear y Baby/Children lo más vendido acierta 0% porque sus 12 prendas no incluyen ninguna de esas líneas: la vitrina general deja fuera secciones enteras de la tienda, y el modelo sí las cubre.
+
+- **Tamaño de muestra por línea** (`reports/piloto_tamano_por_linea.csv`), con el 10% de los clientes en el grupo modelo y los clientes de la población online estimados a partir de la muestra p10:
+
+| Línea | Clientes por semana (estimado) | Clientes por grupo para +1 punto | Semanas para +1 punto | Semanas para +2 puntos |
+|---|---|---|---|---|
+| Ladieswear | 32.130 | 10.824 | 3,4 | 0,9 |
+| Divided | 19.070 | 4.674 | 2,5 | 0,7 |
+| Sport | 3.100 | 1.553 | 5,0 | 1,9 |
+| Menswear | 2.880 | 1.553 | 5,4 | 2,0 |
+| Baby/Children | 1.390 | 1.553 | 11,2 | 4,2 |
+
+  Para las líneas con 0% de acierto en el control se usa una tasa base mínima de 0,5% en el cálculo. **Lectura para elegir la línea de inicio:** Ladieswear y Divided son las que juntan la muestra más rápido (2 a 4 semanas para detectar una mejora de 1 punto). Ladieswear es la línea más grande de la tienda, así que un error ahí afecta más venta; Divided tiene volumen suficiente con menos riesgo, por lo que es una buena candidata para empezar. La decisión final corresponde a H&M, con estos criterios.
 - **Recall@12:** pasa de 2,44% en el control a 7,16% en el grupo modelo (+4,72 puntos, IC 95% de +3,72 a +5,76).
 
 ### 7.3 Métricas del piloto
