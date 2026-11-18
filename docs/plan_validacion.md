@@ -186,7 +186,22 @@ La evaluación offline mide si el modelo **habría acertado** con compras pasada
 
 El notebook `notebooks/07_piloto_ab_simulado.ipynb` aplica este diseño a los 4.162 clientes de la semana de test: los reparte con `asignar_grupo()`, verifica que los grupos sean comparables por edad y tipo de cliente, le muestra a cada grupo una sola vitrina (modelo final o lo más vendido de 7 días) y aplica la regla de escalado. Como hay pocos clientes, el escenario principal usa un reparto 50/50 y el reparto 10/90 se reporta como la etapa inicial real. Los resultados quedan en `reports/piloto_ab_simulado.csv`, `reports/piloto_ab_por_edad.csv` y `reports/piloto_tamano_muestra.csv`.
 
-Es una simulación con datos históricos: muestra que el procedimiento funciona, pero no mide el efecto causal de mostrar la vitrina, que solo puede medir el piloto real.
+Es una simulación con datos históricos: muestra que el procedimiento funciona, pero no mide el efecto causal de mostrar la vitrina,  que solo puede medir el piloto real.
+
+**Resultados de la simulación** (`reports/piloto_ab_simulado.csv`): conversión de la vitrina, en % de clientes que compraron al menos una prenda de su vitrina.
+
+| Escenario | Segmento | Clientes modelo / control | Conversión modelo | Conversión control | Diferencia (IC 95%) | ¿Escalar? |
+|---|---|---|---|---|---|---|
+| 50/50 | Todos | 2.176 / 1.986 | 14,15% | 6,55% | +7,61 puntos (+5,78 a +9,43) | Sí |
+| 50/50 | Con historial | 1.939 / 1.786 | 15,21% | 6,94% | +8,27 puntos (+6,28 a +10,26) | Sí |
+| 50/50 | Nuevos | 237 / 200 | 5,49% | 3,00% | +2,49 puntos (−1,26 a +6,23) | No concluyente |
+| 10/90 (etapa inicial) | Todos | 425 / 3.737 | 13,65% | 6,90% | +6,74 puntos (+3,38 a +10,11) | Sí |
+
+- **Los grupos son comparables:** el hash los reparte de forma pareja por tramo de edad y por tipo de cliente.
+- **La regla de escalado se cumple**, incluso en la etapa inicial del 10%: el grupo modelo convierte más del doble que el control y el intervalo no incluye el 0.
+- **Clientes nuevos:** la diferencia no es significativa, como se esperaba: los dos grupos ven una vitrina de popularidad.
+- **Por tramo de edad** (`reports/piloto_ab_por_edad.csv`): el grupo modelo convierte más en todos los tramos con clientes suficientes, con mejoras de +5,1 a +8,4 puntos y significativas en los cinco. El grupo "sin edad" (7 clientes) no permite conclusiones.
+- **Recall@12:** pasa de 2,44% en el control a 7,16% en el grupo modelo (+4,72 puntos, IC 95% de +3,72 a +5,76).
 
 ### 7.3 Métricas del piloto
 
