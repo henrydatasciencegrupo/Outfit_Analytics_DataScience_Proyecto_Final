@@ -1,0 +1,9 @@
+﻿Tipo,Concepto,Única vez (USD),Por mes (USD)
+Técnico (nube),"API de recomendaciones (2 servidores m7i.large, 24 h)",0,147
+Técnico (nube),"Reentrenamiento semanal (m7i.xlarge, 10 h por semana)",0,9
+Técnico (nube),Seguimiento de experimentos (MLflow) y monitoreo (1 m7i.large),0,74
+Técnico (nube),Imprevistos (20%),0,46
+Técnico (software),Licencias (todo es código abierto),0,0
+Honorarios,Desarrollo: 5 científicos de datos × 2 meses,15000,0
+Honorarios,Operación y reentrenamiento: 1 científico de datos al 25%,0,375
+Referencia (aparte),Plataforma de la tienda online (tipo Shopify Plus),0,2500
