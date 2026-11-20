@@ -25,10 +25,11 @@ Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repo
 │   ├── 04_pipeline_modelos.ipynb           features, modelos y comparación
 │   ├── 05_simulacion_cold_start.ipynb      desde cuántas compras conviene personalizar
 │   ├── 06_metricas_optimizacion_decisiones.ipynb   métricas, optimización y modelo final
-│   └── 07_piloto_ab_simulado.ipynb         piloto A/B simulado antes de escalar
+│   ├── 07_piloto_ab_simulado.ipynb         piloto A/B simulado antes de escalar
+│   └── 08_costos_roi.ipynb                 costos, retorno de la inversión y simulación Monte Carlo
 ├── src/                          código del pipeline, importado por los notebooks
 │   ├── datos.py  features.py  metricas.py  modelos.py
-│   ├── optimizacion.py  simulacion.py  piloto.py
+│   ├── optimizacion.py  simulacion.py  piloto.py  roi.py
 │   └── pipeline.py                         ejecución de punta a punta
 ├── models/                       modelo final entrenado, su configuración y recomendaciones de test
 ├── reports/                      resultados en CSV (insumo del dashboard)
@@ -41,6 +42,7 @@ Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repo
 │   ├── glosario_variables.md               significado de cada variable
 │   ├── eda.md                              hallazgos y decisiones del EDA
 │   ├── modelado.md                         modelos, validación y resultados
+│   ├── costos_roi.md                       inversión, retorno y probabilidad de recuperar la inversión
 │   ├── plan_validacion.md                  plan de validación offline, piloto A/B y monitoreo
 │   └── solucion_errores_git.md             problemas frecuentes con Git y VS Code
 ├── dataset/p10/                  datos locales (no se suben: ver docs/dataset.md)
@@ -126,6 +128,7 @@ Sistema por etapas: popularidad reciente para clientes sin historial y ranker co
 | `05_simulacion_cold_start.ipynb` | Desde cuántas compras conviene personalizar |
 | `06_metricas_optimizacion_decisiones.ipynb` | **Final:** optimización, selección y justificación del modelo (los 03 a 05 son etapas previas) |
 | `07_piloto_ab_simulado.ipynb` | Piloto A/B simulado con la semana de test: reparto con hash, comparabilidad de grupos y regla de escalado |
+| `08_costos_roi.ipynb` | Costos técnicos y honorarios, facturación del canal online y simulación Monte Carlo del retorno de la inversión |
 
 ## Decisiones sobre los datos
 

@@ -14,6 +14,7 @@ Para entender el proyecto en pocos minutos:
 2. [`docs/eda.md`](eda.md): qué encontramos en los datos.
 3. [`docs/modelado.md`](modelado.md): modelos, resultados y recomendaciones para H&M.
 4. [`docs/plan_validacion.md`](plan_validacion.md): cómo se validó el modelo y cómo se probaría en producción antes de escalar.
+5. [`docs/costos_roi.md`](costos_roi.md): cuánto cuesta el sistema y en cuánto tiempo se recupera la inversión.
 
 Para reproducirlo, seguir la sección **Cómo reproducirlo** del [`README.md`](../README.md).
 
@@ -120,13 +121,14 @@ Los datos no se incluyen en el repositorio: se dejan en `dataset/p10/` (ver [`do
 | Simulación de clientes nuevos (desde cuántas compras personalizar) | [`notebooks/05_simulacion_cold_start.ipynb`](../notebooks/05_simulacion_cold_start.ipynb) |
 | Evaluación final en la semana de test | [`notebooks/06_metricas_optimizacion_decisiones.ipynb`](../notebooks/06_metricas_optimizacion_decisiones.ipynb) → sección 8 |
 | Piloto A/B simulado antes de escalar | [`notebooks/07_piloto_ab_simulado.ipynb`](../notebooks/07_piloto_ab_simulado.ipynb) · [`src/piloto.py`](../src/piloto.py) |
+| Costos y retorno de la inversión: cuánto invierte H&M, punto de equilibrio, escenarios y simulación Monte Carlo | [`docs/costos_roi.md`](costos_roi.md) · [`notebooks/08_costos_roi.ipynb`](../notebooks/08_costos_roi.ipynb) · [`src/roi.py`](../src/roi.py) |
 
 ## 9. Resultados y modelo final
 
 | Qué | Dónde |
 |---|---|
 | Resultados en la semana de test | [`docs/modelado.md`](modelado.md) → *3. Qué encontramos* · [`README.md`](../README.md) → *Modelado y evaluación* |
-| Tablas de resultados (CSV) | [`reports/`](../reports/), por ejemplo [`resultados_test_optimizado.csv`](../reports/resultados_test_optimizado.csv), [`intervalos_confianza_test.csv`](../reports/intervalos_confianza_test.csv), [`simulacion_cold_start.csv`](../reports/simulacion_cold_start.csv) y [`piloto_ab_simulado.csv`](../reports/piloto_ab_simulado.csv) |
+| Tablas de resultados (CSV) | [`reports/`](../reports/), por ejemplo [`resultados_test_optimizado.csv`](../reports/resultados_test_optimizado.csv), [`intervalos_confianza_test.csv`](../reports/intervalos_confianza_test.csv), [`simulacion_cold_start.csv`](../reports/simulacion_cold_start.csv), [`piloto_ab_simulado.csv`](../reports/piloto_ab_simulado.csv) y [`roi_escenarios.csv`](../reports/roi_escenarios.csv) |
 | Gráficos | [`reports/figures/`](../reports/figures/) |
 | Modelo final entrenado (Gradient Boosting), su configuración y las recomendaciones de la semana de test | [`models/`](../models/) |
 
@@ -134,7 +136,7 @@ Los datos no se incluyen en el repositorio: se dejan en `dataset/p10/` (ver [`do
 
 | Qué | Dónde | Estado |
 |---|---|---|
-| Código separado por etapa: datos, features, métricas, modelos, optimización, simulación y piloto | [`src/`](../src/) | Listo |
+| Código separado por etapa: datos, features, métricas, modelos, optimización, simulación, piloto y ROI | [`src/`](../src/) | Listo |
 | Ejecución de punta a punta | [`src/pipeline.py`](../src/pipeline.py) | Listo |
 | Librerías necesarias | [`requirements.txt`](../requirements.txt) | Listo |
 | Pasos para reproducir (rutas relativas, semillas fijas) | [`README.md`](../README.md) → *Cómo reproducirlo* | Listo |
