@@ -2,7 +2,7 @@
 
 Guía para recorrer el proyecto **Lookwise Data Lab: recomendador para clientes sin historial (cold start)**. Sigue el recorrido del proyecto según la metodología **CRISP-DM** (del negocio a los datos, el modelado, la evaluación y el despliegue) y, para cada entregable que pide la consigna y cada criterio de las rúbricas de la Demo 1 y la Demo Final, indica dónde está la evidencia en el repositorio.
 
-> **Estado:** versión del 18/11/2026. Lo marcado como *pendiente* se completa antes de la Demo Final; lo marcado como *en revisión* está en un pull request abierto.
+> **Estado:** versión del 20/11/2026. Lo marcado como *pendiente* se completa antes de la Demo Final; lo marcado como *en revisión* está en un pull request abierto.
 >
 > **Cómo se mantiene:** este índice se actualiza con cada entrega. Quien suba algo nuevo (por ejemplo, la demo, el dashboard o el manual) agrega su enlace en la sección que corresponde y cambia el estado a *Listo* en el mismo pull request.
 
@@ -31,7 +31,7 @@ Dónde está la evidencia de cada criterio de evaluación.
 | Demo 1 y Final | Metodología ágil y retrospectiva | [Sección 14](#14-metodología-y-trabajo-en-equipo) | Retrospectiva pendiente |
 | Demo Final | Plan de validación y evaluación | [Sección 8](#8-plan-de-validación-y-evaluación) | Listo |
 | Demo Final | Pipeline reproducible (end-to-end) | [Sección 10](#10-pipeline-reproducible) | MLflow y GitHub Actions pendientes |
-| Demo Final | Despliegue funcional | [Sección 11](#11-despliegue) | Pendiente |
+| Demo Final | Despliegue funcional | [Sección 11](#11-despliegue) | Manual de usuario pendiente |
 | Demo Final | Dashboard interactivo | [Sección 12](#12-dashboard-interactivo) | Pendiente |
 | Demo Final | Comprensión y defensa técnica | [Secciones 7 a 9](#7-selección-y-justificación-del-modelo) y [sección 13](#13-conclusiones-limitaciones-y-recomendaciones) | Listo |
 | Ambas | Calidad de la presentación y trabajo en equipo | [Sección 14](#14-metodología-y-trabajo-en-equipo) | Deck final pendiente |
@@ -42,7 +42,7 @@ Dónde está la evidencia de cada criterio de evaluación.
 |---|---|---|
 | Documento de formulación del PF y diseño de solución | [`README.md`](../README.md) → *Contexto y objetivo* · [`docs/modelado.md`](modelado.md) → *2. Qué hicimos* | Listo |
 | Análisis exploratorio e ingeniería de características | [Secciones 3 a 5](#3-análisis-exploratorio-eda) | Listo |
-| Prototipo funcional | [`models/`](../models/) · demo en [`app/`](../app/) | Demo pendiente |
+| Prototipo funcional | [`models/`](../models/) · API en [`api/`](../api/) · demo en [`app/`](../app/) | Listo |
 | Plan de validación y despliegue | [`docs/plan_validacion.md`](plan_validacion.md) | Listo |
 | Informe técnico y manual de usuario | Documentación en [`docs/`](.) · manual de usuario | Manual pendiente |
 | Herramienta de comunicación | Presentación final y dashboard | Pendiente |
@@ -145,8 +145,8 @@ Los datos no se incluyen en el repositorio: se dejan en `dataset/p10/` (ver [`do
 
 | Qué | Dónde | Estado |
 |---|---|---|
-| Aplicación de demostración (Streamlit): elegir un cliente y ver sus 12 recomendaciones | [`app/`](../app/) | Pendiente |
-| API de recomendaciones | | Pendiente |
+| Aplicación de demostración (Streamlit): elegir un cliente y ver sus 12 recomendaciones | [`app/`](../app/) · [`docs/demo_api_streamlit.md`](demo_api_streamlit.md) | Listo |
+| API de recomendaciones | [`api/`](../api/) · [`docs/demo_api_streamlit.md`](demo_api_streamlit.md) | Listo |
 | Manual de usuario | | Pendiente |
 | Plan de despliegue: piloto A/B, escalado por etapas y monitoreo | [`docs/plan_validacion.md`](plan_validacion.md) → secciones 7 y 8 | Listo |
 

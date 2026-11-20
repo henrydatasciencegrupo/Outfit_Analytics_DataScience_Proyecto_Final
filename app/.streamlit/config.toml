@@ -1,0 +1,8 @@
+[theme]
+base = "light"
+primaryColor = "#3047C9"
+backgroundColor = "#F4F1EC"
+secondaryBackgroundColor = "#E9E4DC"
+textColor = "#17161A"
+font = "'DM Sans':https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap, sans-serif"
+headingFont = "'Cormorant Garamond':https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap, serif"

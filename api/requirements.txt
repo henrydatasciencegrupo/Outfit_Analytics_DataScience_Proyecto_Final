@@ -1,0 +1,9 @@
+# Requiere Python 3.11 o superior (probado con 3.13.17). Con Python 3.10 la instalacion falla.
+fastapi==0.163.1
+uvicorn==0.54.0
+httpx==0.28.1
+pytest==9.2.0
+pandas==3.1.1
+pyarrow==26.0.1
+joblib==1.6.0
+scikit-learn==1.9.1

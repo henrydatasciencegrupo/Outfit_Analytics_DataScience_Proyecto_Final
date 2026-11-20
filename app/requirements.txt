@@ -1,0 +1,5 @@
+# Requiere Python 3.11 o superior (probado con 3.13.17). Con Python 3.10 la instalacion falla.
+streamlit==1.67.0
+requests==2.34.2
+pandas==3.1.1
+pyarrow==26.0.1

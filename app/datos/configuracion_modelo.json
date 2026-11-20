@@ -1,0 +1,59 @@
+{
+  "fecha_corte": "2020-09-16",
+  "ranker": {
+    "algoritmo": "Gradient Boosting",
+    "hiperparametros": {
+      "learning_rate": 0.05,
+      "max_leaf_nodes": 15,
+      "max_iter": 200,
+      "l2_regularization": 1.0,
+      "class_weight": "balanced"
+    },
+    "variables": [
+      "rank_pop",
+      "rank_edad",
+      "rank_cocompra",
+      "puntaje_cocompra",
+      "ya_lo_compro",
+      "ventas_7d",
+      "ventas_30d",
+      "tendencia",
+      "dias_desde_primera_venta",
+      "precio_articulo",
+      "ventas_tramo_7d",
+      "afinidad_grupo",
+      "age",
+      "edad_faltante",
+      "n_compras",
+      "dias_desde_ultima",
+      "compras_por_dia_activo"
+    ],
+    "umbral_mejor_f1": 0.89134
+  },
+  "baseline_optimizado": {
+    "nombre": "Baseline con decaimiento (vida media 3 días)",
+    "top12": [
+      448509014,
+      865799006,
+      809238001,
+      751471001,
+      924243001,
+      923758001,
+      896169005,
+      918522001,
+      809238005,
+      761406001,
+      909370001,
+      805947001
+    ]
+  },
+  "cocompra": {
+    "dias_pares": 28,
+    "peso_recompra": 1.0
+  },
+  "metricas_test_recall_at_12": {
+    "Todos": 0.06951,
+    "Con historial": 0.07527,
+    "Nuevos": 0.02043
+  }
+}

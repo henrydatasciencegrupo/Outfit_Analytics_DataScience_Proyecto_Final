@@ -33,7 +33,8 @@ Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repo
 ├── models/                       modelo final entrenado, su configuración y recomendaciones de test
 ├── reports/                      resultados en CSV (insumo del dashboard)
 │   └── figures/                            gráficos de los notebooks (01 a 27) y de la documentación (eda_*, modelado_*)
-├── app/                          demo en Streamlit (Sprint 2)
+├── api/                          API de recomendación (FastAPI): sirve las 12 prendas de un cliente; lee el modelo de models/
+├── app/                          demo en Streamlit: consulta la API y muestra las prendas recomendadas
 ├── dashboard/                    dashboard de Power BI (Sprint 2)
 ├── docs/                         documentación por tema
 │   ├── dataset.md                          cómo obtener los datos, fuentes y estructura local
@@ -42,6 +43,7 @@ Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repo
 │   ├── eda.md                              hallazgos y decisiones del EDA
 │   ├── modelado.md                         modelos, validación y resultados
 │   ├── plan_validacion.md                  plan de validación offline, piloto A/B y monitoreo
+│   ├── demo_api_streamlit.md               API y demo: uso, decisiones, código y limitaciones
 │   └── solucion_errores_git.md             problemas frecuentes con Git y VS Code
 ├── dataset/p10/                  datos locales (no se suben: ver docs/dataset.md)
 ├── requirements.txt
@@ -58,6 +60,8 @@ Todos los notebooks leen los datos desde `../dataset/p10` (ruta relativa a `note
    pip install -r requirements.txt
    ```
 
+   Ese `requirements.txt` es para los notebooks y el pipeline. La API (`api/`) y la pantalla (`app/`) tienen el suyo, con versiones exactas, porque la API exige `scikit-learn==1.9.1`; no mezclar los archivos. La API y la pantalla requieren Python 3.11 o superior (probadas con 3.13).
+
 2. Conseguir los datos, de **una de estas dos formas**:
    - **Desde cero:** aceptar las condiciones de uso del dataset (ver [`docs/dataset.md`](docs/dataset.md)), descargar los tres CSV y correr `notebooks/01_muestreo_p10.ipynb` (antes hay que poner en la celda de rutas dónde guardaste los CSV). Genera la muestra p10 con una semilla fija, así que todas obtienen la misma.
    - **Con la muestra ya armada:** pedirle al equipo los tres archivos Parquet de la p10 (unos 63 MB) y dejarlos en `dataset/p10/` (esa carpeta no se sube al repositorio). Ver la estructura en [`docs/dataset.md`](docs/dataset.md).
@@ -70,9 +74,29 @@ Todos los notebooks leen los datos desde `../dataset/p10` (ruta relativa a `note
 
    Los resultados y las decisiones están en la sección [Modelado y evaluación](#modelado-y-evaluación) de este README y en el notebook `06`.
 
+## Demo: API y pantalla
+
+El sistema final se puede probar con una API (FastAPI) y una pantalla (Streamlit). La API recibe un cliente de la semana de test y devuelve las 12 prendas recomendadas: la lista fija de populares si es un cliente nuevo y el ranker si tiene historial. La pantalla consulta la API y muestra nombre, tipo, grupo y color de cada prenda, en orden de ranking. Es un prototipo local: usa variables ya calculadas para la semana de test (16 al 22/9/2020) y no calcula nada en vivo.
+
+Cada pieza tiene su propio `requirements.txt` con versiones exactas y requiere Python 3.11 o superior (se probó con 3.13). Hacen falta dos terminales, con la API prendida primero:
+
+```bash
+# Terminal 1: API (puerto 8000)
+cd api
+pip install -r requirements.txt
+uvicorn lookwise_api:app
+
+# Terminal 2: pantalla
+cd app
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+La API se prueba sola en `http://127.0.0.1:8000/docs` y sus 7 tests se corren con `pytest` desde `api/`. Los pasos completos, el contrato de la API, las decisiones de diseño y las limitaciones están en [`docs/demo_api_streamlit.md`](docs/demo_api_streamlit.md).
+
 ## Estado
 
-**Sprint 1:** muestreo, análisis exploratorio y modelado (baseline, modelos y simulación de clientes nuevos) realizados sobre la muestra p10. **Sprint 2:** demo en Streamlit y dashboard. Corte train/test por fecha: el test es del 16 al 22/9/2020 (siete días, la última semana del dataset) y todo lo anterior es entrenamiento; en el modelado, ese entrenamiento se divide en train hasta el 8/9 y validación del 9 al 15/9.
+**Sprint 1:** muestreo, análisis exploratorio y modelado (baseline, modelos y simulación de clientes nuevos) realizados sobre la muestra p10. **Sprint 2:** API y demo en Streamlit (listas y probadas) y dashboard. Corte train/test por fecha: el test es del 16 al 22/9/2020 (siete días, la última semana del dataset) y todo lo anterior es entrenamiento; en el modelado, ese entrenamiento se divide en train hasta el 8/9 y validación del 9 al 15/9.
 
 ## Principales hallazgos del EDA
 
@@ -115,7 +139,7 @@ Partición temporal: entrenamiento hasta el 08/09/2020, validación del 09/09 al
 
 ### Sistema final
 
-Sistema por etapas: popularidad reciente para clientes sin historial y ranker con Gradient Boosting desde la primera compra. El modelo entrenado está en `models/`.
+Sistema por etapas: popularidad reciente para clientes sin historial y ranker con Gradient Boosting desde la primera compra. El modelo entrenado está en `models/` y la API de `api/` lo sirve.
 
 ### Notebooks
 
@@ -143,6 +167,10 @@ Tampoco usamos `FN` y `Active` (66% de vacíos y el vacío de `Active` no se pue
 
 Mercado de origen desconocido (el hemisferio norte se infiere de la estacionalidad); precio sin unidad; sin talle ni cantidad, y la tabla incluye devoluciones; la fecha no tiene hora; evaluación *offline* (solo se registran compras, no lo que vio cada cliente); la muestra es el 10% de los clientes, por lo que las cifras por artículo están infladas respecto del dataset completo. No se trabaja con imágenes.
 
+La demo (API y pantalla) corre en local, solo conoce a los clientes de la semana de test y lee variables ya calculadas; no es un despliegue en producción.
+
+Los clientes nuevos reciben la misma lista de populares: el dataset no tiene género y la edad no mejoró lo más vendido. Como mejora, en el mercado argentino se podría capturar de forma opcional una preferencia de sección al registrarse y validarla con el piloto A/B antes de escalar.
+
 ## Equipo
 
 **Lookwise Data Lab**, Grupo 1 de la cohorte DSPT-07 de Soy Henry.
@@ -150,7 +178,7 @@ Mercado de origen desconocido (el hemisferio norte se infiere de la estacionalid
 | Integrante | Rol en el proyecto | LinkedIn |
 | --- | --- | --- |
 | María Isabel Fernández | Muestreo, EDA y documentación | [LinkedIn](https://www.linkedin.com/in/isabelfernandez-ai-data) |
-| Florencia Dinelli | Muestreo, EDA y README | [LinkedIn](https://www.linkedin.com/in/florencia-dinelli-3672253b9) |
+| Florencia Dinelli | Muestreo, EDA, README, API y demo en Streamlit | [LinkedIn](https://www.linkedin.com/in/florencia-dinelli-3672253b9) |
 | Ignacio Sironi | Baseline y estructura del repositorio | [LinkedIn](https://www.linkedin.com/in/ignacio-sironi-626464113) |
 | Margot Huaman Quispe | Modelado, métricas, optimización y estructura del repositorio | [LinkedIn](https://www.linkedin.com/in/margothuamaneconomista) |
 | Alejandra Blandón | Simulación, conclusiones y dashboard | [LinkedIn](https://www.linkedin.com/in/alejandra-blandon-analyst) |
