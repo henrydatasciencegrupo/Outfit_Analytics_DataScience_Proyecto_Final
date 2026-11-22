@@ -8,3 +8,5 @@ lightgbm>=4.0
 duckdb
 psutil
 jupyter
+streamlit>=1.40
+Joblib

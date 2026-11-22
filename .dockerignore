@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entornos virtuales
+venv/
+.venv/
+.env/
+.env
+
+# Git
+.git/
+.gitignore
+
+# Notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Datos originales y experimentos
+base_datos/
+dataset/
+p10_modelado/
+
+# Logs y caches
+*.log
+.pytest_cache/
+.mypy_cache/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Otros
+node_modules/
