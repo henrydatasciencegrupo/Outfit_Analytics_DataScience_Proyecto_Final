@@ -2,9 +2,6 @@
 
 Este documento explica **qué se construyó, cómo se usa, por qué se tomó cada decisión y qué se descartó**, e incluye el código importante. Todas las afirmaciones sobre números se han verificado con los archivos del proyecto.
 
-**Estado al 20/11/2026:** API funcionando en local con 7 tests automáticos que pasan; pantalla de Streamlit terminada y probada con la API prendida y apagada. Las candidatas se regeneraron con el script oficial y la API reproduce **exactamente** las recomendaciones oficiales (4.162 de 4.162 clientes, mismas 12 prendas y mismo orden). La entrega está preparada con la estructura del repositorio (`api/`, `app/`, `models/`) y verificada de punta a punta. También se probó de punta a punta en una **segunda computadora** (Windows, Python 3.13.17, entorno nuevo): 7 tests, API y pantalla dieron los mismos resultados. 
----
-
 ## Índice
 
 1. [Qué es y qué problema resuelve](#1-qué-es-y-qué-problema-resuelve)
@@ -28,10 +25,10 @@ Este documento explica **qué se construyó, cómo se usa, por qué se tomó cad
 
 **El problema.** Una tienda online de moda tiene miles de prendas y muchos clientes. Para un cliente que ya compró se puede aprender de su historial; para uno **nuevo** (sin compras) no hay historial: es el problema de *arranque en frío*. El modelo final del proyecto lo resuelve con un **sistema por etapas**:
 
-| Etapa | Cuándo | Qué recomienda |
-|---|---|---|
-| `nuevo` | El cliente no tiene compras previas | Las 12 prendas más vendidas recientemente (baseline con decaimiento, vida media de 3 días). La misma lista para todos los clientes nuevos |
-| `con_historial` | El cliente ya compró | Un **ranker** (Gradient Boosting) puntúa unas 90 prendas candidatas del cliente y se quedan las 12 de mayor puntaje |
+| Etapa             | Cuándo                             | Qué recomienda                                                                                                                             |
+| ----------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nuevo`         | El cliente no tiene compras previas | Las 12 prendas más vendidas recientemente (baseline con decaimiento, vida media de 3 días). La misma lista para todos los clientes nuevos |
+| `con_historial` | El cliente ya compró               | Un **ranker** (Gradient Boosting) puntúa unas 90 prendas candidatas del cliente y se quedan las 12 de mayor puntaje                  |
 
 **La demo.** Es un prototipo que muestra cómo se comporta ese modelo: se elige un cliente de la semana de test (16 al 22/09/2020) y se ven las 12 prendas que el sistema le recomendaría, con nombre, tipo, grupo y color. **No es la página de H&M ni un sistema en producción**: las variables de cada prenda candidata están calculadas de antemano para esa semana.
 
@@ -56,10 +53,10 @@ Paso a paso, cuando se elige un cliente:
 
 **Por qué dos piezas separadas.** La API es el camino por el que la pantalla le hace un pedido al modelo y recibe la respuesta. Mientras se mantenga el formato del pedido y de la respuesta (el *contrato*), se puede cambiar el modelo o los datos por dentro sin tocar la pantalla, y la pantalla se puede reemplazar (otra web, otra app) sin tocar el modelo. Además, el grupo confirmó que API y Streamlit son piezas distintas. Quien lee la respuesta cruda ve solo números: dar nombres y colores es trabajo de la pantalla.
 
-| Pieza | Responsabilidad | Tecnología |
-|---|---|---|
-| API | Recibir un cliente y devolver 12 códigos. Decidir la etapa | FastAPI (define los *endpoints*) + uvicorn (el servidor que los pone a escuchar) |
-| Pantalla | Pedir, mostrar, explicar | Streamlit + `requests` + pandas |
+| Pieza    | Responsabilidad                                             | Tecnología                                                                        |
+| -------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| API      | Recibir un cliente y devolver 12 códigos. Decidir la etapa | FastAPI (define los *endpoints*) + uvicorn (el servidor que los pone a escuchar) |
+| Pantalla | Pedir, mostrar, explicar                                    | Streamlit + `requests` + pandas                                                  |
 
 ---
 
@@ -172,17 +169,15 @@ Se abre en `http://localhost:8502`. Se usa el 8502 porque el puerto predetermina
 
 ---
 
----
-
 ## 6. La API en detalle
 
 ### 6.1 El contrato
 
-| Endpoint | Para qué | Parámetro |
-|---|---|---|
-| `GET /salud` | Confirma que la API está encendida (no verifica que las recomendaciones sean buenas: eso lo hacen los tests) | ninguno |
-| `GET /recomendar` | Devuelve 12 prendas para un cliente | `cliente=<id>` (obligatorio) |
-| `GET /docs` | Documentación interactiva (Swagger), generada sola por FastAPI | — |
+| Endpoint            | Para qué                                                                                                     | Parámetro                     |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `GET /salud`      | Confirma que la API está encendida (no verifica que las recomendaciones sean buenas: eso lo hacen los tests) | ninguno                        |
+| `GET /recomendar` | Devuelve 12 prendas para un cliente                                                                           | `cliente=<id>` (obligatorio) |
+| `GET /docs`       | Documentación interactiva (Swagger), generada sola por FastAPI                                               | —                             |
 
 Un **endpoint** es cada dirección de la API que atiende un tipo de pedido; el **parámetro** es el dato que viaja con el pedido (acá, para quién se pide).
 
@@ -199,18 +194,18 @@ Un **endpoint** es cada dirección de la API que atiende un tipo de pedido; el *
 
 **Códigos de estado:**
 
-| Código | Cuándo | Quién "falló" |
-|---|---|---|
-| 200 | Todo bien | — |
-| 404 | El cliente no existe en la lista | El pedido (dato inexistente) |
-| 422 | Falta el parámetro `cliente` (lo valida FastAPI solo) | El pedido (mal armado) |
-| 500 | Error dentro del código de la API | El código; la traza sale en la terminal de uvicorn |
+| Código | Cuándo                                                  | Quién "falló"                                     |
+| ------- | -------------------------------------------------------- | --------------------------------------------------- |
+| 200     | Todo bien                                                | —                                                  |
+| 404     | El cliente no existe en la lista                         | El pedido (dato inexistente)                        |
+| 422     | Falta el parámetro `cliente` (lo valida FastAPI solo) | El pedido (mal armado)                              |
+| 500     | Error dentro del código de la API                       | El código; la traza sale en la terminal de uvicorn |
 
 **Cliente nuevo vs. desconocido:** un cliente *nuevo* está en la lista pero sin compras previas → recibe el baseline (200). Uno *desconocido* no está en la lista → 404. Son casos distintos de negocio y la API los distingue.
 
 ### 6.2 El código importante (`lookwise_api.py`)
 
-**Carga única al arrancar.** El modelo y los datos se cargan **una sola vez**, al principio del archivo, no dentro de la función. Es la *mise en place*: cada pedido responde en ≈1,5 ms porque no recarga nada.
+**Carga única al arrancar.** El modelo y los datos se cargan **una sola vez**, al principio del archivo, no dentro de la función. Cada pedido responde en ≈1,5 ms porque no recarga nada.
 
 ```python
 AQUI = Path(__file__).resolve().parent
@@ -243,11 +238,11 @@ COLUMNAS = ["rank_pop", "rank_edad", "rank_cocompra", "puntaje_cocompra", "ya_lo
 
 **Advertencia: si se reentrena el modelo de `models/`.** El ranker se entrenó con esas 17 variables en ese orden. Como la API ahora lee el modelo de `models/`, que es del grupo, alguien podría reemplazarlo:
 
-| Qué cambia en el modelo | Qué pasa |
-|---|---|
-| Se reentrena con las **mismas 17 variables, mismo orden** | La API lo toma sola y sigue funcionando |
-| Cambian los nombres o el orden de las variables | El modelo se niega a puntuar: scikit-learn compara los nombres de las columnas con los del entrenamiento y la API responde 500 (ver el `ValueError` en la terminal de uvicorn) |
-| Cambian las variables y también hay que regenerar las candidatas | Hay que actualizar `COLUMNAS` y rehacer `candidatas_test.parquet` con las variables nuevas |
+| Qué cambia en el modelo                                          | Qué pasa                                                                                                                                                                        |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Se reentrena con las **mismas 17 variables, mismo orden**   | La API lo toma sola y sigue funcionando                                                                                                                                          |
+| Cambian los nombres o el orden de las variables                   | El modelo se niega a puntuar: scikit-learn compara los nombres de las columnas con los del entrenamiento y la API responde 500 (ver el `ValueError` en la terminal de uvicorn) |
+| Cambian las variables y también hay que regenerar las candidatas | Hay que actualizar `COLUMNAS` y rehacer `candidatas_test.parquet` con las variables nuevas                                                                                   |
 
 El test `test_variables_del_modelo` compara `modelo.feature_names_in_` con `COLUMNAS` y falla apenas el modelo de `models/` deja de coincidir, antes de que nadie abra la pantalla. (Se comprobó cambiando a propósito el orden de dos columnas: el modelo rechaza los pedidos con un `ValueError`.)
 
@@ -292,7 +287,7 @@ def salud():
 
 1. **Candidatas.** Para cada cliente, `candidatas_test.parquet` guarda entre **54 y 118 prendas candidatas (promedio 93)** para los 3.725 clientes con historial. El archivo tiene 370.882 filas en total porque incluye también a los 437 clientes nuevos, que la API no usa: reciben el baseline. Provienen de **tres generadores**, según el código oficial del repositorio (`src/modelos.py`, clase `RankerSupervisado`, con `n_candidatos=40` y `dias_pares=28`): popularidad reciente (7 días), popularidad por tramo de edad (7 días) y co-compra con recompra. **Cada generador aporta sus 40 mejores prendas y las tres listas se unen**, por eso hay entre 54 y 118 candidatas por cliente y no 40 (`rank_pop`, `rank_edad` y `rank_cocompra` guardan la posición en cada lista; vale 41 si la prenda no figuraba en esa lista). *(Nota: `docs/modelado.md` dice que el ranker "ve ~40 candidatas"; 40 es el tamaño de cada lista, no del total.)*
 
-   **El archivo lo genera el script `exportar_candidatas_api.py` de Margot** (carpeta `src/` del repositorio), que reproduce los pasos de la sección 13 del notebook 06: muestra p10 tratada (solo canal online, duplicados conservados, sin colapsar), corte el 16/09/2020 y variables calculadas solo con compras anteriores. Escribe `candidatas_test.parquet` y `clientes_test.csv` con el orden de filas del modelo oficial, que importa para los empates de puntaje (en el archivo hay clientes con empates exactos entre sus 13 primeras prendas: desempata el orden de las filas). Al final verifica contra `models/recomendaciones_semana_test.csv`. Se corre desde la raíz del repositorio y necesita la muestra p10 (`transactions.parquet`, `customers.parquet`, `articles.parquet`, que no se versiona):
+   **El archivo lo genera el script `exportar_candidatas_api.py` ** (carpeta `src/` del repositorio), que reproduce los siguientes pasos: muestra p10 tratada (solo canal online, duplicados conservados, sin colapsar), corte el 16/09/2020 y variables calculadas solo con compras anteriores. Escribe `candidatas_test.parquet` y `clientes_test.csv` con el orden de filas del modelo oficial, que importa para los empates de puntaje (en el archivo hay clientes con empates exactos entre sus 13 primeras prendas: desempata el orden de las filas). Al final verifica contra `models/recomendaciones_semana_test.csv`. Se corre desde la raíz del repositorio y necesita la muestra p10 (`transactions.parquet`, `customers.parquet`, `articles.parquet`, que no se versiona):
 
    ```
    python src/exportar_candidatas_api.py --base dataset/p10 --salida api/datos
@@ -304,11 +299,11 @@ def salud():
 
 **Métrica de referencia (Recall@12 en la semana de test):**
 
-| Grupo | Recall@12 |
-|---|---|
-| Todos los clientes | 6,95 % |
-| Con historial | 7,53 % |
-| Nuevos | 2,04 % |
+| Grupo              | Recall@12 |
+| ------------------ | --------- |
+| Todos los clientes | 6,95 %    |
+| Con historial      | 7,53 %    |
+| Nuevos             | 2,04 %    |
 
 *Recall@12:* para cada cliente, de las prendas **distintas** que compró en la semana de test, qué fracción estaba entre las 12 recomendadas; después se promedia entre clientes. Esta definición se verificó el 19/11/2026: aplicada a `models/recomendaciones_semana_test.csv` del repositorio y a las respuestas reales del test (`test_verdad.parquet`) reproduce exactamente los tres valores de la tabla (6,95 %, 7,53 % y 2,04 %). Que el valor de los nuevos sea mucho menor es esperable: sin historial no se puede personalizar. Es justamente el argumento del sistema por etapas.
 
@@ -316,19 +311,18 @@ def salud():
 
 El repositorio guarda las recomendaciones oficiales de la semana de test en `models/recomendaciones_semana_test.csv` (12 prendas por cliente, 4.162 clientes). Con las candidatas generadas por el script oficial, la API las reproduce **exactamente**:
 
-| Comparación (19/11/2026, mismo entorno: Python 3.13, scikit-learn 1.9.1, pandas 3.1.1) | Resultado |
-|---|---|
+| Comparación                                                           | Resultado                                                                       |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Script `exportar_candidatas_api.py` (verificación propia del script) | **4.162 de 4.162** clientes con las mismas 12 prendas y en el mismo orden |
-| La API (`recomendar`) contra el CSV oficial, todos los clientes | **4.162 de 4.162** |
-| La API contra el CSV oficial, solo clientes con historial | **3.725 de 3.725** |
-| Los 7 tests de la API con los datos nuevos | 7 passed |
+| La API (`recomendar`) contra el CSV oficial, todos los clientes       | **4.162 de 4.162**                                                        |
+| La API contra el CSV oficial, solo clientes con historial               | **3.725 de 3.725**                                                        |
+| Los 7 tests de la API con los datos nuevos                              | 7 passed                                                                        |
 
 Como la API devuelve las mismas listas que el CSV oficial, el Recall@12 que se muestra en la pantalla (7,53 % con historial, 2,04 % nuevos, 6,95 % todos) es el de las recomendaciones que la API sirve, y se puede afirmar que **la API muestra exactamente los resultados del modelo oficial**.
 
-**Cómo se llegó a esto (historial).** La primera versión de `candidatas_test.parquet` se había armado en una sesión de trabajo, sin documentar sus parámetros. Con ese archivo la API rendía casi igual (Recall@12 con historial 7,61 % contra 7,53 % oficial) pero no coincidía: las 12 prendas eran las mismas en 2.400 de los 3.725 clientes con historial (64 %), el solapamiento medio era de 11,6 de 12, y para 319 clientes la lista oficial incluía prendas que no estaban entre las candidatas. Margot explicó que las oficiales se generaron con los duplicados conservados y que lo más probable era que esa primera versión usara los duplicados colapsados; **esa causa no se comprobó**, pero con el script oficial las diferencias desaparecieron. El modelo y la configuración eran los mismos todo el tiempo (idénticos byte a byte a los de `models/`), así que la diferencia estaba en las candidatas.
+**Cómo se llegó a esto (historial).** La primera versión de `candidatas_test.parquet` se había armado en una sesión de trabajo, sin documentar sus parámetros. Con ese archivo la API rendía casi igual (Recall@12 con historial 7,61 % contra 7,53 % oficial) pero no coincidía: las 12 prendas eran las mismas en 2.400 de los 3.725 clientes con historial (64 %), el solapamiento medio era de 11,6 de 12, y para 319 clientes la lista oficial incluía prendas que no estaban entre las candidatas. Dado que el modelo oficial se generó con los duplicados conservados, se pensó que la causa pudiera ser la utilizacion de duplicados colapsados; **esa causa no se comprobó**, pero con el script oficial las diferencias desaparecieron. El modelo y la configuración eran los mismos todo el tiempo (idénticos byte a byte a los de `models/`), así que la diferencia estaba en las candidatas.
 
 El formato del archivo nuevo es igual al anterior (mismas 19 columnas y tipos; `clientes_test.csv` idéntico), de modo que `lookwise_api.py` no necesitó cambios. El archivo pasó de 371.510 a 370.882 filas.
-
 
 ---
 
@@ -444,93 +438,48 @@ st.sidebar.metric("Recall@12 del modelo (test)", f"{recall} %")
 
 El selector dice `Nuevo` (singular) y la clave del archivo JSON es `Nuevos` (plural): al usar el valor del selector como clave directamente, apareció `KeyError: 'Nuevo'`. La línea `clave = ...` traduce uno al otro. (`.replace(".", ",")` muestra el decimal con coma, como se escribe en español.)
 
-### 7.6 Tema visual (`.streamlit/config.toml`)
-
-```toml
-[theme]
-base = "light"
-primaryColor = "#3047C9"
-backgroundColor = "#F4F1EC"
-secondaryBackgroundColor = "#E9E4DC"
-textColor = "#17161A"
-font = "'DM Sans':https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap, sans-serif"
-headingFont = "'Cormorant Garamond':https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap, serif"
-```
-
-| Color | Hex | Dónde se usa |
-|---|---|---|
-| Azul Lookwise | `#3047C9` | Elementos activos (botones de selección) |
-| Crema | `#F4F1EC` | Fondo |
-| Beige | `#E9E4DC` | Barra lateral y encabezado de la tabla |
-| Negro suave | `#17161A` | Texto (sin negro ni blanco puros) |
-| Rosa viejo | `#E9B8A8` | Fondo de la etiqueta de etapa |
-
-Tipografías: **Cormorant Garamond** para títulos y **DM Sans** para texto.
-
-- El archivo `config.toml` **se lee solo al arrancar** Streamlit: para ver cambios de tema hay que reiniciarlo. Debe estar dentro de la carpeta `.streamlit/` (la carpeta oculta), al lado de `app.py`.
-- El rosa viejo, el terracota (`#9A5A48`) y el gris suave (`#6E6860`) **no tienen casilla en el tema**, por eso se usan solo en elementos propios.
-- La etiqueta de etapa usa HTML propio con `unsafe_allow_html=True`. Es seguro acá porque el texto sale de un diccionario escrito en el propio código (`"Cliente nuevo"`, `"Cliente con historial"`), no de datos que escriba un usuario.
-- Se probó el contraste de la etiqueta: terracota sobre rosa daba ≈3:1 (por debajo del 4,5:1 recomendado para letra chica), por eso el texto pasó a negro suave `#17161A`.
-- Un bloque de CSS acomoda el espacio: sube la barra lateral y el título para que se vean más filas de la tabla sin scrollear:
-
-```python
-st.markdown(
-    """
-    <style>
-    [data-testid="stSidebarHeader"] { height: 2rem; }
-    [data-testid="stSidebarUserContent"] { padding-top: 0; }
-    [data-testid="stMainBlockContainer"] { padding-top: 1rem; }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-```
-
-*(Los nombres `data-testid` pueden cambiar entre versiones de Streamlit; se probó con la 1.67.0.)*
-
----
 
 ## 8. Decisiones de diseño y alternativas descartadas
 
 ### 8.1 API
 
-| # | Decisión | Por qué | Alternativa descartada |
-|---|---|---|---|
-| A1 | Hacer una API (FastAPI + uvicorn) separada de la pantalla | API y Streamlit son piezas distintas; la rúbrica pide una demo estable (API o aplicación) y el profe habló de un modelo desplegado en una API | Solo un CSV precalculado: cumple en el papel, pero no hace inferencia real |
-| A2 | Contrato fijo: `GET /recomendar?cliente=<id>` → `{cliente, etapa, prendas}` | Pantalla y API pueden avanzar y cambiar por separado | Que la API devuelva también nombres y colores: mezcla responsabilidades |
-| A3 | La etapa la decide el **sistema** según `es_nuevo` | En la tienda real el cliente no elige cuántas compras tiene | Un deslizador "compras que conoce el sistema" (maqueta inicial) |
-| A4 | Cliente nuevo → baseline; con historial → ranker | Es el sistema por etapas del modelo final (notebook 06) | Un único modelo para todos |
-| A5 | Decir "puntaje", no "probabilidad" | `class_weight: balanced` hace que el número sirva para ordenar, no como probabilidad | — |
-| A6 | Cargar modelo y datos una sola vez | ≈1,5 ms por pedido | Cargar dentro de la función |
-| A7 | Orden estable en empates (`kind="stable"`) | Mismo pedido → misma respuesta | Orden por defecto |
-| A8 | Guarda del 404 antes de leer al cliente | Evita el `KeyError` → 500 | Dejar que falle |
-| A9 | Distinguir nuevo (200) de desconocido (404) | Son casos de negocio distintos | — |
-| A10 | Entorno fijo (`api_hm`, scikit-learn 1.9.1) | Con otra versión las listas cambian (~88 % de solapamiento) | Usar el entorno base |
-| A11 | 7 tests automáticos | En segundos se sabe si se rompió el contrato | Probar solo a mano |
-| A12 | La API lee el modelo de `models/`, sin copia propia | Una sola fuente de verdad; la copia era idéntica (0 diferencias en 4.162 clientes) | Copia dentro de `api/`: autosuficiente, pero podía quedar desactualizada |
-| A13 | Test `test_variables_del_modelo` | Avisa si el modelo se reentrenó con otras variables u otro orden | Sin test |
-| A14 | Excepción en `.gitignore` solo para `api/datos/*.parquet` y `app/datos/*.parquet` | Con 3 MB la demo corre tras clonar; no abre la puerta a otros parquet | Pasar a CSV (más pesado); compartir los archivos por fuera del repositorio |
+| #   | Decisión                                                                                | Por qué                                                                                                                                         | Alternativa descartada                                                      |
+| --- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| A1  | Hacer una API (FastAPI + uvicorn) separada de la pantalla                                | API y Streamlit son piezas distintas; la rúbrica pide una demo estable (API o aplicación) y el profe habló de un modelo desplegado en una API | Solo un CSV precalculado: cumple en el papel, pero no hace inferencia real  |
+| A2  | Contrato fijo: `GET /recomendar?cliente=<id>` → `{cliente, etapa, prendas}`         | Pantalla y API pueden avanzar y cambiar por separado                                                                                             | Que la API devuelva también nombres y colores: mezcla responsabilidades    |
+| A3  | La etapa la decide el **sistema** según `es_nuevo`                              | En la tienda real el cliente no elige cuántas compras tiene                                                                                     | Un deslizador "compras que conoce el sistema" (maqueta inicial)             |
+| A4  | Cliente nuevo → baseline; con historial → ranker                                       | Es el sistema por etapas del modelo final (notebook 06)                                                                                          | Un único modelo para todos                                                 |
+| A5  | Decir "puntaje", no "probabilidad"                                                       | `class_weight: balanced` hace que el número sirva para ordenar, no como probabilidad                                                          | —                                                                          |
+| A6  | Cargar modelo y datos una sola vez                                                       | ≈1,5 ms por pedido                                                                                                                              | Cargar dentro de la función                                                |
+| A7  | Orden estable en empates (`kind="stable"`)                                             | Mismo pedido → misma respuesta                                                                                                                  | Orden por defecto                                                           |
+| A8  | Guarda del 404 antes de leer al cliente                                                  | Evita el `KeyError` → 500                                                                                                                     | Dejar que falle                                                             |
+| A9  | Distinguir nuevo (200) de desconocido (404)                                              | Son casos de negocio distintos                                                                                                                   | —                                                                          |
+| A10 | Entorno fijo (`api_hm`, scikit-learn 1.9.1)                                            | Con otra versión las listas cambian (~88 % de solapamiento)                                                                                     | Usar el entorno base                                                        |
+| A11 | 7 tests automáticos                                                                     | En segundos se sabe si se rompió el contrato                                                                                                    | Probar solo a mano                                                          |
+| A12 | La API lee el modelo de `models/`, sin copia propia                                    | Una sola fuente de verdad; la copia era idéntica (0 diferencias en 4.162 clientes)                                                              | Copia dentro de `api/`: autosuficiente, pero podía quedar desactualizada |
+| A13 | Test `test_variables_del_modelo`                                                       | Avisa si el modelo se reentrenó con otras variables u otro orden                                                                                | Sin test                                                                    |
+| A14 | Excepción en `.gitignore` solo para `api/datos/*.parquet` y `app/datos/*.parquet` | Con 3 MB la demo corre tras clonar; no abre la puerta a otros parquet                                                                            | Pasar a CSV (más pesado); compartir los archivos por fuera del repositorio |
 
 ### 8.2 Pantalla
 
-| # | Decisión | Por qué | Alternativa descartada |
-|---|---|---|---|
-| B1 | La pantalla **consulta la API** | Demuestra la arquitectura pantalla → API → modelo | Leer `recomendaciones_semana_test.csv` directo (decisión inicial del 16/11, modificada) |
-| B2 | Sin deslizador de compras "que conoce el sistema" | Es el único elemento que no representa el funcionamiento real; además exigiría correr el modelo en vivo con datos que no están en el repositorio | Deslizador de la maqueta |
-| B3 | Filtro de compras previas solo para "Con historial" | La rúbrica pide casos comunes: pocas y muchas compras | Slider numérico libre |
-| B4 | Cortes 1–5 / 6–80 / 81+ | Salen de la distribución real (p10 = 5, mediana 35, p75 = 81) | Cortes arbitrarios |
-| B5 | Id abreviado + cantidad de compras | El id completo no se lee; las compras explican la recomendación | Id completo |
-| B6 | Título distinto por etapa | Se entiende por qué la lista de un cliente nuevo es siempre la misma | Título genérico |
-| B7 | Tabla con posición 1–12 y nombre, tipo, grupo y color | Son las columnas útiles para entender la recomendación | Mostrar solo ids |
-| B8 | `reindex` en lugar de `isin` | Respeta el orden del ranking | `isin` |
-| B9 | Errores visibles y claros, sin trazas | Una demo estable no muestra pantallas técnicas | Dejar el error de Streamlit |
-| B10 | Catálogo reducido (15.029 × 5, 271 KB) en vez del original (105.542 × 25, 6 MB) | **No es por peso** (6 MB cargan al instante): solo hace falta lo que se recomienda y se muestra. App más liviana, fácil de distribuir y con menos datos expuestos | Cargar el catálogo completo |
-| B11 | `@st.cache_data` | Streamlit re-ejecuta el archivo en cada clic | Cargar sin caché |
-| B12 | Mostrar el Recall@12 con aclaración | Honestidad sobre el desempeño; justifica el sistema por etapas (7,53 % → 2,04 % al cambiar de tipo). Riesgo: 7,5 % suena bajo sin contexto, por eso va discreto y aclarado | Pantalla sin métricas |
-| B13 | Tema propio y etiqueta de color | Identidad visual del grupo; sin blanco ni negro puros | Estilo por defecto |
-| B14 | Vocabulario "compras del cliente", no "ventas" | "Ventas" suena a ventas totales de H&M | — |
-| B15 | Dirección de la API configurable con `LOOKWISE_API_URL` | Deja lista la pantalla para Docker sin cambiar nada hoy (valor por defecto igual al anterior) | Dirección fija en el código |
-| B16 | La pantalla se llama `app.py` | Coincide con `streamlit run app/app.py` del README de `app/` | Mantener `app.py` y corregir el README |
+| #   | Decisión                                                                          | Por qué                                                                                                                                                                     | Alternativa descartada                                                                     |
+| --- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| B1  | La pantalla **consulta la API**                                              | Demuestra la arquitectura pantalla → API → modelo                                                                                                                          | Leer `recomendaciones_semana_test.csv` directo (decisión inicial del 16/11, modificada) |
+| B2  | Sin deslizador de compras "que conoce el sistema"                                  | Es el único elemento que no representa el funcionamiento real; además exigiría correr el modelo en vivo con datos que no están en el repositorio                         | Deslizador de la maqueta                                                                   |
+| B3  | Filtro de compras previas solo para "Con historial"                                | La rúbrica pide casos comunes: pocas y muchas compras                                                                                                                       | Slider numérico libre                                                                     |
+| B4  | Cortes 1–5 / 6–80 / 81+                                                          | Salen de la distribución real (p10 = 5, mediana 35, p75 = 81)                                                                                                               | Cortes arbitrarios                                                                         |
+| B5  | Id abreviado + cantidad de compras                                                 | El id completo no se lee; las compras explican la recomendación                                                                                                             | Id completo                                                                                |
+| B6  | Título distinto por etapa                                                         | Se entiende por qué la lista de un cliente nuevo es siempre la misma                                                                                                        | Título genérico                                                                          |
+| B7  | Tabla con posición 1–12 y nombre, tipo, grupo y color                            | Son las columnas útiles para entender la recomendación                                                                                                                     | Mostrar solo ids                                                                           |
+| B8  | `reindex` en lugar de `isin`                                                   | Respeta el orden del ranking                                                                                                                                                 | `isin`                                                                                   |
+| B9  | Errores visibles y claros, sin trazas                                              | Una demo estable no muestra pantallas técnicas                                                                                                                              | Dejar el error de Streamlit                                                                |
+| B10 | Catálogo reducido (15.029 × 5, 271 KB) en vez del original (105.542 × 25, 6 MB) | **No es por peso** (6 MB cargan al instante): solo hace falta lo que se recomienda y se muestra. App más liviana, fácil de distribuir y con menos datos expuestos    | Cargar el catálogo completo                                                               |
+| B11 | `@st.cache_data`                                                                 | Streamlit re-ejecuta el archivo en cada clic                                                                                                                                 | Cargar sin caché                                                                          |
+| B12 | Mostrar el Recall@12 con aclaración                                               | Honestidad sobre el desempeño; justifica el sistema por etapas (7,53 % → 2,04 % al cambiar de tipo). Riesgo: 7,5 % suena bajo sin contexto, por eso va discreto y aclarado | Pantalla sin métricas                                                                     |
+| B13 | Tema propio y etiqueta de color                                                    | Identidad visual del grupo; sin blanco ni negro puros                                                                                                                        | Estilo por defecto                                                                         |
+| B14 | Vocabulario "compras del cliente", no "ventas"                                     | "Ventas" suena a ventas totales de H&M                                                                                                                                       | —                                                                                         |
+| B15 | Dirección de la API configurable con `LOOKWISE_API_URL`                         | Deja lista la pantalla para Docker sin cambiar nada hoy (valor por defecto igual al anterior)                                                                                | Dirección fija en el código                                                              |
+| B16 | La pantalla se llama `app.py`                                                    | Coincide con `streamlit run app/app.py` del README de `app/`                                                                                                             | Mantener `app.py` y corregir el README                                                   |
 
 ---
 
@@ -559,15 +508,15 @@ def test_cliente_inexistente():
     assert r.status_code == 404
 ```
 
-| Test | Verifica |
-|---|---|
-| `test_salud` | 200 y 4.162 clientes |
-| `test_cliente_nuevo` | 200, etapa `nuevo`, 12 prendas |
-| `test_cliente_con_historial` | 200, etapa `con_historial`, 12 prendas |
-| `test_estabilidad` | Dos pedidos iguales dan exactamente la misma respuesta |
-| `test_cliente_inexistente` | 404 |
-| `test_sin_parametro` | 422 |
-| `test_variables_del_modelo` | Las 17 variables del modelo de `models/` coinciden, en orden, con `COLUMNAS` de la API |
+| Test                           | Verifica                                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------------------------ |
+| `test_salud`                 | 200 y 4.162 clientes                                                                       |
+| `test_cliente_nuevo`         | 200, etapa `nuevo`, 12 prendas                                                           |
+| `test_cliente_con_historial` | 200, etapa `con_historial`, 12 prendas                                                   |
+| `test_estabilidad`           | Dos pedidos iguales dan exactamente la misma respuesta                                     |
+| `test_cliente_inexistente`   | 404                                                                                        |
+| `test_sin_parametro`         | 422                                                                                        |
+| `test_variables_del_modelo`  | Las 17 variables del modelo de `models/` coinciden, en orden, con `COLUMNAS` de la API |
 
 Se ejecutan, desde `api`, con:
 
@@ -579,18 +528,18 @@ Resultado: **7 passed**. El archivo de tests debe estar **al lado** de `lookwise
 
 ### 9.2 Pruebas manuales
 
-| Prueba | Resultado |
-|---|---|
-| API: cliente con historial en `/docs` | 200, `con_historial`, 12 prendas |
-| API: el mismo cliente dos veces | Mismas 12 prendas, mismo orden |
-| API: cliente nuevo | 200, `nuevo`, lista del baseline |
-| API: cliente `abc123` | 404 `{"detail": "Cliente no encontrado"}` |
-| Pantalla con la API apagada | Cuadro rojo con mensaje claro |
-| Pantalla con la API prendida | Etapa + 12 prendas con nombre, tipo, grupo y color |
-| Pantalla, "Nuevo" | 437 clientes; lista idéntica a la de la API para un nuevo |
-| Pantalla, "Pocas" / "Muchas" | 416 / 935 clientes |
-| Pantalla, 12 filas | Todas con datos completos (sin celdas vacías) |
-| Listas entre clientes | Distintas: un cliente de 44 compras recibe trajes de baño, tops y cardigans; uno de 190, jeans, pantalones y ropa interior básica |
+| Prueba                                  | Resultado                                                                                                                           |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| API: cliente con historial en `/docs` | 200, `con_historial`, 12 prendas                                                                                                  |
+| API: el mismo cliente dos veces         | Mismas 12 prendas, mismo orden                                                                                                      |
+| API: cliente nuevo                      | 200, `nuevo`, lista del baseline                                                                                                  |
+| API: cliente `abc123`                 | 404 `{"detail": "Cliente no encontrado"}`                                                                                         |
+| Pantalla con la API apagada             | Cuadro rojo con mensaje claro                                                                                                       |
+| Pantalla con la API prendida            | Etapa + 12 prendas con nombre, tipo, grupo y color                                                                                  |
+| Pantalla, "Nuevo"                       | 437 clientes; lista idéntica a la de la API para un nuevo                                                                          |
+| Pantalla, "Pocas" / "Muchas"            | 416 / 935 clientes                                                                                                                  |
+| Pantalla, 12 filas                      | Todas con datos completos (sin celdas vacías)                                                                                      |
+| Listas entre clientes                   | Distintas: un cliente de 44 compras recibe trajes de baño, tops y cardigans; uno de 190, jeans, pantalones y ropa interior básica |
 
 **Qué prueban y qué no:** estabilidad no es acierto. Los tests confirman que la API **funciona y es consistente**; qué tan buenas son las recomendaciones lo mide el Recall@12.
 
@@ -598,13 +547,13 @@ Resultado: **7 passed**. El archivo de tests debe estar **al lado** de `lookwise
 
 ## 10. Casos de uso para recorrer la demo
 
-| Caso | Cómo | Qué debe pasar |
-|---|---|---|
-| Cliente con historial | "Con historial" → elegir cualquiera | Etiqueta "Cliente con historial", lista personalizada |
-| Pocas contra muchas compras | Comparar un cliente de "Pocas" con uno de "Muchas" | Las listas son distintas |
-| Cliente nuevo | "Nuevo" | Desaparece el selector de compras previas (todos tienen 0); la lista es la misma para cualquier nuevo |
-| Consistencia | Elegir un cliente, cambiar a otro y volver | Misma lista y mismo orden |
-| API apagada | Cerrar la terminal de la API y recargar | Mensaje rojo "No se pudo conectar con la API. ¿Está encendida?" |
+| Caso                        | Cómo                                              | Qué debe pasar                                                                                       |
+| --------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Cliente con historial       | "Con historial" → elegir cualquiera               | Etiqueta "Cliente con historial", lista personalizada                                                 |
+| Pocas contra muchas compras | Comparar un cliente de "Pocas" con uno de "Muchas" | Las listas son distintas                                                                              |
+| Cliente nuevo               | "Nuevo"                                            | Desaparece el selector de compras previas (todos tienen 0); la lista es la misma para cualquier nuevo |
+| Consistencia                | Elegir un cliente, cambiar a otro y volver         | Misma lista y mismo orden                                                                             |
+| API apagada                 | Cerrar la terminal de la API y recargar            | Mensaje rojo "No se pudo conectar con la API. ¿Está encendida?"                                     |
 
 La API también se prueba sola en `http://127.0.0.1:8000/docs`: `GET /recomendar` → *Try it out* → pegar un `customer_id` de `clientes_test.csv` → *Execute*.
 
@@ -614,17 +563,17 @@ La API también se prueba sola en `http://127.0.0.1:8000/docs`: `GET /recomendar
 
 Documentarlos sirve para reconocerlos rápido si vuelven a pasar.
 
-| Síntoma | Causa | Resolución |
-|---|---|---|
-| `500 Internal Server Error` en la API | `NameError: name '____' is not defined`: quedó un espacio en blanco sin completar | Leer la **última línea** del traceback en la terminal de uvicorn |
-| `/docs` no cargaba | `SyntaxError`: dos líneas se unieron en una y quedó `[:____]` | Separar las líneas, escribir `[:12]` y buscar `____` con Ctrl+F |
-| 500 con un cliente inventado | `KeyError` al buscar un cliente que no existe | Guarda con 404 antes de la búsqueda |
-| Listas de prendas distintas a las esperadas | scikit-learn 1.7.2 en lugar de 1.9.1 | Entorno dedicado `api_hm` |
-| Streamlit abría otra aplicación | El puerto 8501 estaba ocupado | `--server.port 8502` |
-| API: `[Errno 10048]` al arrancar | El puerto 8000 lo ocupaba una API anterior | Cerrar esa terminal (o el proceso) y volver a arrancar |
-| El tema no se aplicaba | `config.toml` quedó fuera de la carpeta `.streamlit/` | Moverlo adentro y reiniciar Streamlit |
-| `KeyError: 'Nuevo'` en la pantalla | El selector dice "Nuevo" y el JSON usa "Nuevos" | Traducir con `clave = "Nuevos" if tipo == "Nuevo" else "Con historial"` |
-| Un cambio de código no se veía | El archivo no estaba guardado | Ctrl+S (punto blanco en la pestaña = sin guardar) y recargar |
+| Síntoma                                    | Causa                                                                                | Resolución                                                               |
+| ------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| `500 Internal Server Error` en la API     | `NameError: name '____' is not defined`: quedó un espacio en blanco sin completar | Leer la **última línea** del traceback en la terminal de uvicorn  |
+| `/docs` no cargaba                        | `SyntaxError`: dos líneas se unieron en una y quedó `[:____]`                  | Separar las líneas, escribir `[:12]` y buscar `____` con Ctrl+F      |
+| 500 con un cliente inventado                | `KeyError` al buscar un cliente que no existe                                      | Guarda con 404 antes de la búsqueda                                      |
+| Listas de prendas distintas a las esperadas | scikit-learn 1.7.2 en lugar de 1.9.1                                                 | Entorno dedicado `api_hm`                                               |
+| Streamlit abría otra aplicación           | El puerto 8501 estaba ocupado                                                        | `--server.port 8502`                                                    |
+| API: `[Errno 10048]` al arrancar          | El puerto 8000 lo ocupaba una API anterior                                           | Cerrar esa terminal (o el proceso) y volver a arrancar                    |
+| El tema no se aplicaba                      | `config.toml` quedó fuera de la carpeta `.streamlit/`                           | Moverlo adentro y reiniciar Streamlit                                     |
+| `KeyError: 'Nuevo'` en la pantalla        | El selector dice "Nuevo" y el JSON usa "Nuevos"                                      | Traducir con `clave = "Nuevos" if tipo == "Nuevo" else "Con historial"` |
+| Un cambio de código no se veía            | El archivo no estaba guardado                                                        | Ctrl+S (punto blanco en la pestaña = sin guardar) y recargar             |
 
 **Método general:** un 500 se diagnostica siempre mirando la terminal donde corre el programa, de `Traceback` hasta la última línea. Un `KeyError: 'X'` significa "busqué la clave X y no existe": la línea que señala indica dónde.
 
@@ -661,21 +610,21 @@ Documentarlos sirve para reconocerlos rápido si vuelven a pasar.
 
 ## 14. Glosario
 
-| Término | Qué es |
-|---|---|
-| **API** | El camino por el que la pantalla le hace un pedido al modelo y recibe la respuesta. No muestra nada por sí sola |
-| **Endpoint** | Cada dirección de la API que atiende un tipo de pedido (`/salud`, `/recomendar`) |
-| **Parámetro** | El dato que viaja con el pedido (acá, el identificador del cliente) |
-| **FastAPI** | La librería de Python con que se define la API |
-| **uvicorn** | El servidor que pone a la API a escuchar pedidos |
-| **Streamlit** | La librería con que se arma la pantalla |
-| **JSON** | El formato en que viaja la respuesta de la API |
-| **Etapa** | `nuevo` (sin compras previas) o `con_historial` |
-| **Baseline** | La recomendación simple de referencia: las más vendidas recientemente (con decaimiento) |
-| **Ranker** | El modelo (Gradient Boosting) que ordena las prendas candidatas de un cliente |
-| **Candidatas** | Las ~90 prendas que el ranker puntúa para cada cliente |
-| **Recall@12** | De lo que el cliente compró en la semana de test, qué fracción estaba entre las 12 recomendadas (promedio entre clientes) |
-| **Arranque en frío** | Recomendar a quien no tiene historial |
-| **Contrato** | El acuerdo sobre cómo es el pedido y cómo es la respuesta |
-| **Estabilidad** | Mismo cliente, mismo modelo, mismos datos → misma lista |
-| **Caché** (`@st.cache_data`) | Guardar el resultado de una carga para no repetirla en cada interacción |
+| Término                              | Qué es                                                                                                                      |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **API**                         | El camino por el que la pantalla le hace un pedido al modelo y recibe la respuesta. No muestra nada por sí sola             |
+| **Endpoint**                    | Cada dirección de la API que atiende un tipo de pedido (`/salud`, `/recomendar`)                                        |
+| **Parámetro**                  | El dato que viaja con el pedido (acá, el identificador del cliente)                                                         |
+| **FastAPI**                     | La librería de Python con que se define la API                                                                              |
+| **uvicorn**                     | El servidor que pone a la API a escuchar pedidos                                                                             |
+| **Streamlit**                   | La librería con que se arma la pantalla                                                                                     |
+| **JSON**                        | El formato en que viaja la respuesta de la API                                                                               |
+| **Etapa**                       | `nuevo` (sin compras previas) o `con_historial`                                                                          |
+| **Baseline**                    | La recomendación simple de referencia: las más vendidas recientemente (con decaimiento)                                    |
+| **Ranker**                      | El modelo (Gradient Boosting) que ordena las prendas candidatas de un cliente                                                |
+| **Candidatas**                  | Las ~90 prendas que el ranker puntúa para cada cliente                                                                      |
+| **Recall@12**                   | De lo que el cliente compró en la semana de test, qué fracción estaba entre las 12 recomendadas (promedio entre clientes) |
+| **Arranque en frío**           | Recomendar a quien no tiene historial                                                                                        |
+| **Contrato**                    | El acuerdo sobre cómo es el pedido y cómo es la respuesta                                                                  |
+| **Estabilidad**                 | Mismo cliente, mismo modelo, mismos datos → misma lista                                                                     |
+| **Caché** (`@st.cache_data`) | Guardar el resultado de una carga para no repetirla en cada interacción                                                     |
