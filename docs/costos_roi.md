@@ -12,38 +12,38 @@
 
 El cálculo está en `src/roi.py`, la simulación en `notebooks/08_costos_roi.ipynb` y los resultados en `reports/roi_*.csv` (el archivo `roi_flujos_powerbi.csv` está listo para el dashboard).
 
-## 1. Pautas del profesor (daily del 18/11/2026)
+## 1. Pautas de referencia
 
-| Pauta | Cómo se aplica |
-|---|---|
-| Costos técnicos con los precios publicados de los servicios | Nube con precios públicos de AWS; software de código abierto |
-| Beneficio solo sobre el **canal online**, donde funciona el recomendador | Se usa la facturación online de H&M, no la total |
-| Incluir **honorarios profesionales** con referencia norteamericana | USD 1.500 por científico de datos por mes, durante unos 2 meses de proyecto (valor indicado por el profesor, con referencia a sueldos de EE. UU. de USD 160.000 al año) |
-| Costos de nube con precios **publicados en la web** | Precio por hora publicado × horas de uso de cada servidor (sección 2) |
-| Para el costo total, **sumar con desglose** | Tabla de costos separada en técnicos y honorarios, con el total |
-| ROI: primero el **punto de equilibrio** | Sección 5.1: equilibrio operativo y de recupero |
-| A partir de ese punto, **3 escenarios** (opcional) | Sección 5.2: pesimista, base y optimista |
-| Gráficos interactivos **segmentados en Power BI** (opcional) | `reports/roi_flujos_powerbi.csv`: flujo mes a mes por escenario, listo para filtrar |
-| Trabajar con **simulación y datos sintéticos** | Sección 5.3: Monte Carlo con 10.000 escenarios |
+| Pauta                                                                          | Cómo se aplica                                                                                                                                                     |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Costos técnicos con los precios publicados de los servicios                   | Nube con precios públicos de AWS; software de código abierto                                                                                                      |
+| Beneficio solo sobre el **canal online**, donde funciona el recomendador | Se usa la facturación online de H&M, no la total                                                                                                                   |
+| Incluir **honorarios profesionales** con referencia norteamericana       | USD 1.500 por científico de datos por mes, durante unos 2 meses de proyecto (valor de referencia a sueldos de EE. UU. de USD 160.000 al año a noviembre de 2026) |
+| Costos de nube con precios **publicados en la web**                      | Precio por hora publicado × horas de uso de cada servidor (sección 2)                                                                                             |
+| Para el costo total, **sumar con desglose**                              | Tabla de costos separada en técnicos y honorarios, con el total                                                                                                    |
+| ROI: primero el **punto de equilibrio**                                  | Sección 5.1: equilibrio operativo y de recupero                                                                                                                    |
+| A partir de ese punto, **3 escenarios** (opcional)                       | Sección 5.2: pesimista, base y optimista                                                                                                                           |
+| Gráficos interactivos **segmentados en Power BI** (opcional)            | `reports/roi_flujos_powerbi.csv`: flujo mes a mes por escenario, listo para filtrar                                                                               |
+| Trabajar con **simulación y datos sintéticos**                         | Sección 5.3: Monte Carlo con 10.000 escenarios                                                                                                                     |
 
 ## 2. Inversión
 
-| Tipo | Concepto | Única vez | Por mes |
-|---|---|---|---|
-| Técnico (nube) | API de recomendaciones: 2 servidores m7i.large encendidos todo el día (uno de respaldo) | | USD 147 |
-| Técnico (nube) | Reentrenamiento semanal: 1 servidor m7i.xlarge, 10 horas por semana | | USD 9 |
-| Técnico (nube) | Seguimiento de experimentos (MLflow) y monitoreo: 1 servidor m7i.large | | USD 74 |
-| Técnico (nube) | Imprevistos (almacenamiento, transferencia de datos): 20% | | USD 46 |
-| Técnico (software) | Licencias: pandas, scikit-learn, MLflow, FastAPI y Streamlit son de código abierto | | USD 0 |
-| **Subtotal técnico** | | | **USD 275** |
-| Honorarios | Desarrollo: 5 científicos de datos × 2 meses × USD 1.500 | USD 15.000 | |
-| Honorarios | Operación y reentrenamiento: 1 científico de datos al 25% de su tiempo | | USD 375 |
-| **Subtotal honorarios** | | **USD 15.000** | **USD 375** |
-| **Total** | | **USD 15.000** | **USD 650** |
+| Tipo                          | Concepto                                                                                 | Única vez           | Por mes           |
+| ----------------------------- | ---------------------------------------------------------------------------------------- | -------------------- | ----------------- |
+| Técnico (nube)               | API de recomendaciones: 2 servidores m7i.large encendidos todo el día (uno de respaldo) |                      | USD 147           |
+| Técnico (nube)               | Reentrenamiento semanal: 1 servidor m7i.xlarge, 10 horas por semana                      |                      | USD 9             |
+| Técnico (nube)               | Seguimiento de experimentos (MLflow) y monitoreo: 1 servidor m7i.large                   |                      | USD 74            |
+| Técnico (nube)               | Imprevistos (almacenamiento, transferencia de datos): 20%                                |                      | USD 46            |
+| Técnico (software)           | Licencias: pandas, scikit-learn, MLflow, FastAPI y Streamlit son de código abierto      |                      | USD 0             |
+| **Subtotal técnico**   |                                                                                          |                      | **USD 275** |
+| Honorarios                    | Desarrollo: 5 científicos de datos × 2 meses × USD 1.500                              | USD 15.000           |                   |
+| Honorarios                    | Operación y reentrenamiento: 1 científico de datos al 25% de su tiempo                 |                      | USD 375           |
+| **Subtotal honorarios** |                                                                                          | **USD 15.000** | **USD 375** |
+| **Total**               |                                                                                          | **USD 15.000** | **USD 650** |
 
 **Costo total del primer año:** USD 15.000 + 12 × USD 650 = **USD 22.805** (USD 3.305 técnicos y USD 19.500 de honorarios). Los honorarios son unos 86% del total: la nube es barata porque el modelo es liviano.
 
-**Cómo se llega a los honorarios:** el profesor dio como referencia norteamericana un sueldo de unos USD 160.000 al año para un científico de datos (unos USD 13.300 por mes), y para este proyecto sugirió tomar **USD 1.500 por científico de datos por mes**, durante unos **2 meses**. Con los 5 integrantes del equipo: 5 × 2 × USD 1.500 = USD 15.000.
+**Cómo se llega a los honorarios:** se tomó como referencia norteamericana un sueldo de unos USD 160.000 al año para un científico de datos (unos USD 13.300 por mes), y para este proyecto sugirió tomar **USD 1.500 por científico de datos por mes**, durante unos **2 meses**. Con los 5 integrantes del equipo: 5 × 2 × USD 1.500 = USD 15.000.
 
 Los precios de nube son los precios on-demand publicados por AWS para la región us-east-1 (m7i.large: USD 0,1008 por hora; m7i.xlarge: USD 0,2016 por hora).
 
@@ -51,14 +51,14 @@ Los precios de nube son los precios on-demand publicados por AWS para la región
 
 ## 3. Facturación del canal online
 
-Los precios del dataset de Kaggle están **escalados** (no son precios reales en dinero), así que no sirven para calcular facturación. Por eso, como acordamos en el daily, se usa la **facturación pública de H&M**, solo del canal online, y se simula.
+Los precios del dataset están **escalados** (no son precios reales en dinero), así que no sirven para calcular facturación. Por eso se usa la **facturación pública de H&M**, solo del canal online, y se simula.
 
-| Dato público | Valor |
-|---|---|
-| Ventas netas de H&M, año fiscal 2025 | SEK 228.285 millones (unos USD 23.700 millones) |
-| Parte online de las ventas | algo más del 30% |
-| Mercados con venta online | 61 |
-| **Facturación online de un mercado promedio de H&M** | **unos USD 9,7 millones por mes** |
+| Dato público                                               | Valor                                           |
+| ----------------------------------------------------------- | ----------------------------------------------- |
+| Ventas netas de H&M, año fiscal 2025                       | SEK 228.285 millones (unos USD 23.700 millones) |
+| Parte online de las ventas                                  | algo más del 30%                               |
+| Mercados con venta online                                   | 61                                              |
+| **Facturación online de un mercado promedio de H&M** | **unos USD 9,7 millones por mes**         |
 
 H&M Argentina es un mercado nuevo que abre con una sola tienda física, así que se supone que su canal online factura **una fracción** de un mercado promedio:
 
@@ -74,11 +74,11 @@ Además, el canal online arranca al 40% de su nivel y lo alcanza en 6 meses.
 Beneficio mensual = facturación online × venta extra por el recomendador × margen de contribución
 ```
 
-| Supuesto | Mínimo | Más probable | Máximo | De dónde sale |
-|---|---|---|---|---|
-| Tamaño del canal online (fracción de un mercado promedio) | 2% | 10% | 25% | Sección 3 |
-| Venta online extra por el recomendador | 1% | 3% | 6% | Parte de la mejora del piloto A/B (+7,6 puntos en pedidos con una prenda recomendada, notebook 07) que es venta nueva. El máximo coincide con lo que espera la industria de la personalización |
-| Margen de contribución | 35% | 45% | 53,4% | Margen bruto de H&M en 2025 (53,4%) menos los costos variables de vender online (pago y envío) |
+| Supuesto                                                    | Mínimo | Más probable | Máximo | De dónde sale                                                                                                                                                                                    |
+| ----------------------------------------------------------- | ------- | ------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tamaño del canal online (fracción de un mercado promedio) | 2%      | 10%           | 25%     | Sección 3                                                                                                                                                                                        |
+| Venta online extra por el recomendador                      | 1%      | 3%            | 6%      | Parte de la mejora del piloto A/B (+7,6 puntos en pedidos con una prenda recomendada, (notebook 07) que es venta nueva. El máximo coincide con lo que espera la industria de la personalización |
+| Margen de contribución                                     | 35%     | 45%           | 53,4%   | Margen bruto de H&M en 2025 (53,4%) menos los costos variables de vender online (pago y envío)                                                                                                   |
 
 ## 5. Resultados
 
@@ -86,11 +86,11 @@ Beneficio mensual = facturación online × venta extra por el recomendador × ma
 
 Con los supuestos más probables (3% de venta extra y 45% de margen), cada USD 100 de facturación online deja USD 1,35 de beneficio gracias al recomendador.
 
-| Punto de equilibrio | Facturación online necesaria por mes | Como % de un mercado online promedio de H&M |
-|---|---|---|
-| **Operativo:** el beneficio del mes cubre el costo del mes (USD 650) | **USD 48.177** | 0,5% |
-| **Recupero en 12 meses:** cubre además los USD 15.000 del desarrollo | USD 140.769 | 1,4% |
-| **Recupero en 6 meses** | USD 233.362 | 2,4% |
+| Punto de equilibrio                                                         | Facturación online necesaria por mes | Como % de un mercado online promedio de H&M |
+| --------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------- |
+| **Operativo:** el beneficio del mes cubre el costo del mes (USD 650)  | **USD 48.177**                  | 0,5%                                        |
+| **Recupero en 12 meses:** cubre además los USD 15.000 del desarrollo | USD 140.769                           | 1,4%                                        |
+| **Recupero en 6 meses**                                               | USD 233.362                           | 2,4%                                        |
 
 Incluso el escenario mínimo (unos USD 195.000 por mes) supera el equilibrio operativo; lo que lo deja sin recuperar la inversión en el año es la combinación con poca venta extra (1%) y margen bajo (35%).
 
@@ -98,23 +98,23 @@ Incluso el escenario mínimo (unos USD 195.000 por mes) supera el equilibrio ope
 
 12 meses de operación:
 
-| Escenario | Facturación online por mes | Beneficio en 12 meses | Resultado a 12 meses | ROI a 12 meses | Se recupera en |
-|---|---|---|---|---|---|
-| Pesimista | USD 194.604 | USD 6.947 | −USD 15.857 | −70% | más de 12 meses |
-| **Base** | **USD 973.018** | **USD 133.985** | **+USD 111.180** | **+488%** | **mes 3** |
-| Optimista | USD 2.432.545 | USD 794.975 | +USD 772.171 | +3.386% | mes 1 |
+| Escenario      | Facturación online por mes | Beneficio en 12 meses | Resultado a 12 meses   | ROI a 12 meses  | Se recupera en   |
+| -------------- | --------------------------- | --------------------- | ---------------------- | --------------- | ---------------- |
+| Pesimista      | USD 194.604                 | USD 6.947             | −USD 15.857           | −70%           | más de 12 meses |
+| **Base** | **USD 973.018**       | **USD 133.985** | **+USD 111.180** | **+488%** | **mes 3**  |
+| Optimista      | USD 2.432.545               | USD 794.975           | +USD 772.171           | +3.386%         | mes 1            |
 
 ### 5.3 Simulación con datos sintéticos (Monte Carlo)
 
 10.000 escenarios en los que se sortean los tres supuestos con una distribución triangular (más peso en el valor más probable).
 
-| Indicador | Valor |
-|---|---|
-| Probabilidad de recuperar toda la inversión en **6 meses** | **98%** |
-| Probabilidad de recuperarla en **12 meses** | **100%** (sobre 10.000 escenarios, redondeado) |
-| ROI a 12 meses: escenario mediano | +621% |
-| ROI a 12 meses: 80% central de los escenarios | de +231% a +1.266% |
-| Mes de recupero mediano | 3 |
+| Indicador                                                         | Valor                                                |
+| ----------------------------------------------------------------- | ---------------------------------------------------- |
+| Probabilidad de recuperar toda la inversión en **6 meses** | **98%**                                        |
+| Probabilidad de recuperarla en **12 meses**                 | **100%** (sobre 10.000 escenarios, redondeado) |
+| ROI a 12 meses: escenario mediano                                 | +621%                                                |
+| ROI a 12 meses: 80% central de los escenarios                     | de +231% a +1.266%                                   |
+| Mes de recupero mediano                                           | 3                                                    |
 
 El supuesto que más mueve el resultado es el **tamaño del canal online**: más que la venta extra o el margen.
 
@@ -138,7 +138,7 @@ Sumando USD 2.500 por mes de la tienda online, la probabilidad de recuperar la i
 
 - La facturación de Argentina se estima a partir del promedio de los mercados online de H&M; el valor real dependerá del lanzamiento.
 - La venta extra sale de una simulación con datos históricos de otro mercado; el piloto A/B es la forma de medirla.
-- Los honorarios usan el valor de referencia indicado por el profesor; con tarifas de mercado de EE. UU. más altas la inversión sube, pero en el escenario base se seguiría recuperando dentro del año.
+- Los honorarios usan el valor de referencia indicado; con tarifas de mercado de EE. UU. más altas la inversión sube, pero en el escenario base se seguiría recuperando dentro del año.
 - Los precios de nube son on-demand; con contratos de 1 a 3 años bajan entre 27% y 49%.
 - No se descuenta el valor del dinero en el tiempo, porque el horizonte es de 12 meses.
 
