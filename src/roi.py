@@ -6,7 +6,7 @@ Autor: Lookwise Data Lab
 
 Pregunta del cliente: ¿cuánto hay que invertir y cuánto retorna el recomendador?
 
-Pautas del profesor (daily del 18/11/2026):
+Criterios del análisis:
 - Costos técnicos con precios publicados de servicios en la nube y de software.
 - Beneficio calculado solo sobre la facturación del canal online, donde funciona el recomendador.
 - Incluir honorarios profesionales con tarifas norteamericanas, separados de los costos técnicos.
@@ -35,7 +35,7 @@ PLATAFORMA_MENSUAL = 2_500.0          # tienda online tipo Shopify Plus, contrat
 # ---------------------------------------------------------------------------------------------
 # 2. Honorarios profesionales (tarifas norteamericanas)
 # ---------------------------------------------------------------------------------------------
-HONORARIO_MENSUAL_DS = 1_500.0        # USD por científico de datos por mes (valor indicado por el profesor; referencia: sueldos de EE. UU. de USD 160.000 al año)
+HONORARIO_MENSUAL_DS = 1_500.0        # USD por científico de datos por mes (valor del proyecto; referencia: sueldos de EE. UU. de USD 160.000 al año)
 INTEGRANTES = 5
 MESES_DESARROLLO = 2
 DEDICACION_MANTENIMIENTO = 0.25       # un científico de datos al 25% para operar y reentrenar

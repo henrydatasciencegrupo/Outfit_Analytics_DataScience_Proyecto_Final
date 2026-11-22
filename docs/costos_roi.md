@@ -12,13 +12,13 @@
 
 El cálculo está en `src/roi.py`, la simulación en `notebooks/08_costos_roi.ipynb` y los resultados en `reports/roi_*.csv` (el archivo `roi_flujos_powerbi.csv` está listo para el dashboard).
 
-## 1. Pautas de referencia
+## 1. Criterios del análisis
 
 | Pauta                                                                          | Cómo se aplica                                                                                                                                                     |
 | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Costos técnicos con los precios publicados de los servicios                   | Nube con precios públicos de AWS; software de código abierto                                                                                                      |
 | Beneficio solo sobre el **canal online**, donde funciona el recomendador | Se usa la facturación online de H&M, no la total                                                                                                                   |
-| Incluir **honorarios profesionales** con referencia norteamericana       | USD 1.500 por científico de datos por mes, durante unos 2 meses de proyecto (valor de referencia a sueldos de EE. UU. de USD 160.000 al año a noviembre de 2026) |
+| Incluir **honorarios profesionales** con referencia norteamericana       | USD 1.500 por científico de datos por mes, durante unos 2 meses de proyecto (referencia: sueldos de EE. UU. de unos USD 160.000 al año) |
 | Costos de nube con precios **publicados en la web**                      | Precio por hora publicado × horas de uso de cada servidor (sección 2)                                                                                             |
 | Para el costo total, **sumar con desglose**                              | Tabla de costos separada en técnicos y honorarios, con el total                                                                                                    |
 | ROI: primero el **punto de equilibrio**                                  | Sección 5.1: equilibrio operativo y de recupero                                                                                                                    |
@@ -43,7 +43,7 @@ El cálculo está en `src/roi.py`, la simulación en `notebooks/08_costos_roi.ip
 
 **Costo total del primer año:** USD 15.000 + 12 × USD 650 = **USD 22.805** (USD 3.305 técnicos y USD 19.500 de honorarios). Los honorarios son unos 86% del total: la nube es barata porque el modelo es liviano.
 
-**Cómo se llega a los honorarios:** se tomó como referencia norteamericana un sueldo de unos USD 160.000 al año para un científico de datos (unos USD 13.300 por mes), y para este proyecto sugirió tomar **USD 1.500 por científico de datos por mes**, durante unos **2 meses**. Con los 5 integrantes del equipo: 5 × 2 × USD 1.500 = USD 15.000.
+**Cómo se llega a los honorarios:** se tomó como referencia norteamericana un sueldo de unos USD 160.000 al año para un científico de datos (unos USD 13.300 por mes) y, para este proyecto, un valor de **USD 1.500 por científico de datos por mes**, durante unos **2 meses**. Con los 5 integrantes del equipo: 5 × 2 × USD 1.500 = USD 15.000.
 
 Los precios de nube son los precios on-demand publicados por AWS para la región us-east-1 (m7i.large: USD 0,1008 por hora; m7i.xlarge: USD 0,2016 por hora).
 
@@ -138,7 +138,7 @@ Sumando USD 2.500 por mes de la tienda online, la probabilidad de recuperar la i
 
 - La facturación de Argentina se estima a partir del promedio de los mercados online de H&M; el valor real dependerá del lanzamiento.
 - La venta extra sale de una simulación con datos históricos de otro mercado; el piloto A/B es la forma de medirla.
-- Los honorarios usan el valor de referencia indicado; con tarifas de mercado de EE. UU. más altas la inversión sube, pero en el escenario base se seguiría recuperando dentro del año.
+- Los honorarios usan un valor de referencia para el proyecto; con tarifas de mercado de EE. UU. más altas la inversión sube, pero en el escenario base se seguiría recuperando dentro del año.
 - Los precios de nube son on-demand; con contratos de 1 a 3 años bajan entre 27% y 49%.
 - No se descuenta el valor del dinero en el tiempo, porque el horizonte es de 12 meses.
 
