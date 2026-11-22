@@ -1,6 +1,7 @@
 # Lookwise Data Lab: recomendador para clientes sin historial (cold start)
 
-Proyecto final del bootcamp de Data Science de Soy Henry, hecho por el equipo **Lookwise Data Lab**. Metodología: **CRISP-DM con Scrum (sprints)**.
+Equipo **Lookwise Data Lab**. 
+Metodología: **CRISP-DM con Scrum (sprints)**.
 
 ## Contexto y objetivo
 
@@ -52,21 +53,30 @@ Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repo
 └── README.md
 ```
 
-Todos los notebooks leen los datos desde `../dataset/p10` (ruta relativa a `notebooks/`), así que basta con dejar los Parquet en esa carpeta y ejecutar **Run All**, sin editar rutas.
+Todos los notebooks leen los datos desde `../dataset/p10` (ruta relativa a `notebooks/`), por lo tanto solo se deben dejar los Parquet en esa carpeta y ejecutar **Run All**, sin editar rutas.
 
 ## Cómo reproducirlo
 
-1. Instalar las librerías (Python 3.10 o superior):
+1. **Crear el entorno.** Un único entorno virtual sirve para todo el proyecto: notebooks, API y pantalla. Requiere Python 3.11 o superior (probado con 3.13). Desde la carpeta del repositorio:
 
    ```bash
-   pip install -r requirements.txt
+   python -m venv .venv
    ```
 
-   Ese `requirements.txt` es para los notebooks y el pipeline. La API (`api/`) y la pantalla (`app/`) tienen el suyo, con versiones exactas, porque la API exige `scikit-learn==1.9.1`; no mezclar los archivos. La API y la pantalla requieren Python 3.11 o superior (probadas con 3.13).
+   Activarlo:
 
-2. Conseguir los datos, de **una de estas dos formas**:
-   - **Desde cero:** aceptar las condiciones de uso del dataset (ver [`docs/dataset.md`](docs/dataset.md)), descargar los tres CSV y correr `notebooks/01_muestreo_p10.ipynb` (antes hay que poner en la celda de rutas dónde guardaste los CSV). Genera la muestra p10 con una semilla fija, así que todas obtienen la misma.
-   - **Con la muestra ya armada:** pedirle al equipo los tres archivos Parquet de la p10 (unos 63 MB) y dejarlos en `dataset/p10/` (esa carpeta no se sube al repositorio). Ver la estructura en [`docs/dataset.md`](docs/dataset.md).
+   - Windows (PowerShell): `.\.venv\Scripts\Activate.ps1`. Si PowerShell lo bloquea, correr antes `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`.
+   - macOS o Linux: `source .venv/bin/activate`
+
+   Y con el entorno activado, instalar las librerías:
+
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
+
+   Las versiones están fijadas a propósito: la API reproduce las recomendaciones oficiales solo con `scikit-learn==1.9.1` (con la 1.7.2, por ejemplo, las listas coinciden en cerca del 88%). Las carpetas `api/` y `app/` conservan su propio `requirements.txt`, útil para levantar una sola pieza; con el entorno único no hace falta instalarlos aparte. La carpeta `.venv` no se sube al repositorio.
+
+2. **Conseguir los datos:** los tres archivos Parquet de la muestra p10 (unos 63 MB) no se incluyen en este repositorio por su tamaño. Están a disposición en el equipo de Lookwise Data Lab (ver contactos en la sección [Equipo](#equipo)) y se dejan en `dataset/p10/`. Ver la estructura en [`docs/dataset.md`](docs/dataset.md). *Opcional:* quien quiera auditar cómo se armó la muestra puede reproducirla desde cero con `notebooks/01_muestreo_p10.ipynb`, descargando los CSV originales (ver [`docs/dataset.md`](docs/dataset.md)); no hace falta para correr el resto del proyecto.
 3. **Correr el EDA:** abrir `notebooks/02_EDA_unificado_p10.ipynb` desde la carpeta `notebooks/` y ejecutar todas las celdas.
 4. **Correr el modelado:** ejecutar los notebooks `03`, `04`, `05` y `06` en ese orden, o el pipeline completo desde la carpeta del repositorio:
 
@@ -74,27 +84,11 @@ Todos los notebooks leen los datos desde `../dataset/p10` (ruta relativa a `note
    python src/pipeline.py --base dataset/p10 --salida reports
    ```
 
+   Los notebooks pueden reescribir archivos de `reports/` y `models/`: si solo se desea probarlos, recomendamos crear una copia del repositorio para no incluir esos cambios en un commit.
+
    Los resultados y las decisiones están en la sección [Modelado y evaluación](#modelado-y-evaluación) de este README y en el notebook `06`.
 
-## Demo: API y pantalla
-
-El sistema final se puede probar con una API (FastAPI) y una pantalla (Streamlit). La API recibe un cliente de la semana de test y devuelve las 12 prendas recomendadas: la lista fija de populares si es un cliente nuevo y el ranker si tiene historial. La pantalla consulta la API y muestra nombre, tipo, grupo y color de cada prenda, en orden de ranking. Es un prototipo local: usa variables ya calculadas para la semana de test (16 al 22/9/2020) y no calcula nada en vivo.
-
-Cada pieza tiene su propio `requirements.txt` con versiones exactas y requiere Python 3.11 o superior (se probó con 3.13). Hacen falta dos terminales, con la API prendida primero:
-
-```bash
-# Terminal 1: API (puerto 8000)
-cd api
-pip install -r requirements.txt
-uvicorn lookwise_api:app
-
-# Terminal 2: pantalla
-cd app
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-La API se prueba sola en `http://127.0.0.1:8000/docs` y sus 7 tests se corren con `pytest` desde `api/`. Los pasos completos, el contrato de la API, las decisiones de diseño y las limitaciones están en [`docs/demo_api_streamlit.md`](docs/demo_api_streamlit.md).
+Para probar la API y la pantalla, ver [Demo: API y pantalla](#demo-api-y-pantalla).
 
 ## Estado
 
@@ -118,11 +112,11 @@ La API se prueba sola en `http://127.0.0.1:8000/docs` y sus 7 tests se corren co
 | Referencia sin aprendizaje | Popularidad (lo más vendido, con decaimiento temporal) | Vara a superar y recomendación para clientes nuevos |
 | Referencia por reglas | Popularidad por tramo de edad | Primer intento de personalizar a clientes nuevos |
 | No supervisado | Co-compra + recompra (filtrado colaborativo ítem-ítem) | Genera candidatas y señales para el ranker |
-| Supervisado | Ranker con regresión logística y Gradient Boosting | Ordena las candidatas por probabilidad de compra |
+| Supervisado | Ranker con regresión logística y Gradient Boosting | Ordena las candidatas por puntaje de compra |
 
 ### Protocolo de validación
 
-Partición temporal: entrenamiento hasta el 08/09/2020, validación del 09/09 al 15/09 (todas las elecciones) y test del 16/09 al 22/09 (medición única). Métrica de decisión: **Recall@12**; Accuracy, Precision, F1 y matriz de confusión como diagnóstico. La Accuracy no se usa para elegir porque solo el 0,5% de los pares cliente–prenda son compras. El plan completo, con el piloto A/B en producción antes de escalar, está en [`docs/plan_validacion.md`](docs/plan_validacion.md).
+Partición temporal: entrenamiento hasta el 08/09/2020, validación del 09/09 al 15/09 (todas las elecciones) y test del 16/09 al 22/09 (medición única). Métrica de decisión: **Recall@12**; Accuracy, Precision, F1 y matriz de confusión como diagnóstico. La Accuracy no se utiliza para la elección porque solo el 0,5% de los pares cliente–prenda son compras. El plan completo, con el piloto A/B en producción antes de escalar, se encuentra en [`docs/plan_validacion.md`](docs/plan_validacion.md).
 
 ### Resultados (semana de test)
 
@@ -141,7 +135,7 @@ Partición temporal: entrenamiento hasta el 08/09/2020, validación del 09/09 al
 
 ### Sistema final
 
-Sistema por etapas: popularidad reciente para clientes sin historial y ranker con Gradient Boosting desde la primera compra. El modelo entrenado está en `models/` y la API de `api/` lo sirve.
+Sistema por etapas: popularidad reciente para clientes sin historial y ranker con Gradient Boosting desde la primera compra. El modelo entrenado se encuentra en `models/` y la API de `api/` lo entrega.
 
 ### Notebooks
 
@@ -154,21 +148,48 @@ Sistema por etapas: popularidad reciente para clientes sin historial y ranker co
 | `07_piloto_ab_simulado.ipynb` | Piloto A/B simulado con la semana de test: reparto con hash, comparabilidad de grupos y regla de escalado |
 | `08_costos_roi.ipynb` | Costos técnicos y honorarios, facturación del canal online y simulación Monte Carlo del retorno de la inversión |
 
+## Demo: API y pantalla
+
+El sistema final se puede probar con una API (FastAPI) y una pantalla (Streamlit). La API recibe un cliente de la semana de test y devuelve las 12 prendas recomendadas: la lista fija de populares si es un cliente nuevo y el ranker si tiene historial. La pantalla consulta la API y muestra nombre, tipo, grupo y color de cada prenda, en orden de ranking. Es un prototipo local: usa variables ya calculadas para la semana de test (16 al 22/9/2020) y no calcula nada en vivo.
+
+Con el entorno único activo (ver [Cómo reproducirlo](#cómo-reproducirlo)) alcanza para las dos piezas. Hacen falta dos terminales, con el entorno activado en cada una y la API prendida primero:
+
+```bash
+# Terminal 1: API (puerto 8000)
+cd api
+uvicorn lookwise_api:app
+
+# Terminal 2: pantalla
+cd app
+streamlit run app.py
+```
+
+La API se prueba sola en `http://127.0.0.1:8000/docs` y sus 7 tests se corren con `pytest` desde `api/`. Si en lugar del entorno único se prefiere instalar una sola pieza, cada carpeta (`api/` y `app/`) trae su `requirements.txt` con versiones exactas. Los pasos completos, el contrato de la API, las decisiones de diseño y las limitaciones están en [`docs/demo_api_streamlit.md`](docs/demo_api_streamlit.md).
+
+## Costos y retorno de la inversión (ROI)
+
+Estimación bajo supuestos editables y datos sintéticos; el detalle y la simulación están en [`docs/costos_roi.md`](docs/costos_roi.md) y en el notebook `08`.
+
+- **Inversión:** USD 15.000 de desarrollo y USD 650 por mes de operación; USD 22.805 en el primer año.
+- **Retorno:** en el escenario más probable, el recomendador se paga en el mes 3 y cierra el primer año con un ROI de +488%.
+- **Punto de equilibrio operativo:** unos USD 48.000 de facturación online por mes.
+- **Riesgo:** en 10.000 escenarios simulados (Monte Carlo), la inversión se recupera en 6 meses en el 98% de los casos; sumando el costo de la tienda online, baja al 87% en 6 meses y al 96% en 12.
+
 ## Decisiones sobre los datos
 
-**No usamos el código postal.** La propuesta contemplaba simular un mercado nuevo apartando clientes por código postal, pero con estos datos no conviene:
+**No se utiliza el código postal.** La propuesta contemplaba simular un mercado nuevo apartando clientes por código postal, pero con los datos actuales no conviene:
 
-1. Es un hash anonimizado: no tiene significado geográfico ni permite agrupar zonas.
+1. Es un hash anonimizado: no posee significado geográfico ni permite agrupar zonas.
 2. Hay 87.652 códigos distintos para 110.252 clientes y el 82% de los códigos tiene un solo cliente.
 3. Un único código concentra 2.857 clientes (2,6%), unas 136 veces más que el siguiente (21 clientes), y parece un valor por defecto para datos faltantes. Esos clientes se comportan distinto al resto (por ejemplo, 7,6% sin edad contra 0,9%).
 
-Apartar clientes por código postal daría grupos arbitrarios, que no representarían un mercado nuevo. Por eso los clientes fríos se simulan ocultando historial (0, 1 o 2 compras visibles).
+Apartar clientes por código postal daría grupos arbitrarios, que no representarían un mercado nuevo. Por lo tanto, los clientes fríos se simulan ocultando historial (0, 1 o 2 compras visibles).
 
-Tampoco usamos `FN` y `Active` (66% de vacíos y el vacío de `Active` no se puede interpretar), y no recomendamos usar `club_member_status` ni `fashion_news_frequency`: la tabla de clientes es una foto de un solo momento y puede reflejar información posterior a las compras (*data leakage*).
+Tampoco utilizamos `FN` y `Active` (66% de vacíos y el vacío de `Active` no se puede interpretar), y no recomendamos usar `club_member_status` ni `fashion_news_frequency`: la tabla de clientes es una foto de un solo momento y puede reflejar información posterior a las compras (*data leakage*).
 
 ## Limitaciones
 
-Mercado de origen desconocido (el hemisferio norte se infiere de la estacionalidad); precio sin unidad; sin talle ni cantidad, y la tabla incluye devoluciones; la fecha no tiene hora; evaluación *offline* (solo se registran compras, no lo que vio cada cliente); la muestra es el 10% de los clientes, por lo que las cifras por artículo están infladas respecto del dataset completo. No se trabaja con imágenes.
+Mercado de origen desconocido (el hemisferio norte se infiere de la estacionalidad); precio sin unidad; sin talle ni cantidad, y la tabla incluye devoluciones; la fecha no tiene hora; evaluación *offline* (solo se registran transacciones, no lo que vio cada cliente); la muestra es el 10% de los clientes, por lo que las cifras por artículo están infladas respecto del dataset completo. No se trabaja con imágenes.
 
 La demo (API y pantalla) corre en local, solo conoce a los clientes de la semana de test y lee variables ya calculadas; no es un despliegue en producción.
 
@@ -176,7 +197,7 @@ Los clientes nuevos reciben la misma lista de populares: el dataset no tiene gé
 
 ## Equipo
 
-**Lookwise Data Lab**, Grupo 1 de la cohorte DSPT-07 de Soy Henry.
+**Lookwise Data Lab**: integrantes y roles.
 
 | Integrante | Rol en el proyecto | LinkedIn |
 | --- | --- | --- |

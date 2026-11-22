@@ -1,10 +1,26 @@
-pandas>=2.2
-numpy>=1.26
-pyarrow>=15
-matplotlib>=3.8
-scikit-learn>=1.4
-xgboost>=2.0
-lightgbm>=4.0
-duckdb
-psutil
+# Entorno unificado del proyecto Lookwise Data Lab: notebooks, API y pantalla.
+# Requiere Python 3.11 o superior (probado con 3.13).
+# Con scikit-learn distinto de 1.9.1 la API puede dar listas distintas a las oficiales.
+
+# Datos y modelado (notebooks, pipeline)
+pandas==3.1.1
+numpy==2.5.5
+pyarrow==26.0.1
+matplotlib==3.11.2
+scikit-learn==1.9.1
+joblib==1.6.0
+xgboost==3.4.1
+lightgbm==4.7.0
+duckdb==2.0.1
+psutil==7.2.2
 jupyter
+
+# API (api/)
+fastapi==0.163.1
+uvicorn==0.54.0
+httpx==0.28.1
+pytest==9.2.0
+
+# Pantalla (app/)
+streamlit==1.67.0
+requests==2.34.2
