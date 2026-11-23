@@ -49,7 +49,7 @@ Estos son los archivos del modelado. La estructura completa del repositorio est�
 | `src/modelos.py` | Baseline, M1, M2, M3 y modelo final |
 | `src/optimizacion.py` | Métricas de clasificación, baseline optimizado y búsqueda de hiperparámetros |
 | `src/simulacion.py` | Reglas y funciones de la simulación de clientes nuevos |
-| `src/pipeline.py` | Ejecución de punta a punta de la etapa previa (notebook 04) |
+| `src/pipeline.py` | Ejecución de punta a punta: reproduce sin notebooks el modelo final del notebook 06, sus resultados y los artefactos de `models/` |
 | `models/` | Modelo final (`ranker_clasificador.joblib`), su configuración (`configuracion_modelo.json`) y las recomendaciones de la semana de test |
 | `reports/*.csv` | Resultados de cada etapa (insumo del dashboard en Power BI) |
 | `reports/figures/modelado_*.png` | Gráficos de este documento (sección 6), exportados de los notebooks |
@@ -479,7 +479,7 @@ La lógica vive en **scripts** (reutilizables por todo el equipo y por la futura
 | `src/features.py` | Pipeline de features **sin leakage** | Preparación |
 | `src/metricas.py` | Las 5 métricas del equipo + intervalo de confianza | Evaluación |
 | `src/modelos.py` | Baseline, Modelo 1 (edad), Modelo 2 (co-compra, no supervisado) y Modelo 3 (ranker, supervisado), todos con la misma interfaz | Modelado |
-| `src/pipeline.py` | Corre todo de punta a punta: `python src/pipeline.py --base <carpeta p10>` | Reproducibilidad |
+| `src/pipeline.py` | Corre todo de punta a punta y reproduce el notebook 06: `python src/pipeline.py --base <carpeta p10> --salida <carpeta> --modelos <carpeta>` | Reproducibilidad |
 
 > **Para reproducir:** dejar la muestra en `dataset/p10/` y ejecutar *Run All*.
 
