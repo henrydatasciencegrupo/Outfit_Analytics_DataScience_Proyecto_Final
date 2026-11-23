@@ -311,7 +311,7 @@ def salud():
 
 El repositorio guarda las recomendaciones oficiales de la semana de test en `models/recomendaciones_semana_test.csv` (12 prendas por cliente, 4.162 clientes). Con las candidatas generadas por el script oficial, la API las reproduce **exactamente**:
 
-| Comparación                                                           | Resultado                                                                       |
+| Comparación                                                            | Resultado                                                                       |
 | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Script `exportar_candidatas_api.py` (verificación propia del script) | **4.162 de 4.162** clientes con las mismas 12 prendas y en el mismo orden |
 | La API (`recomendar`) contra el CSV oficial, todos los clientes       | **4.162 de 4.162**                                                        |
@@ -437,7 +437,6 @@ st.sidebar.metric("Recall@12 del modelo (test)", f"{recall} %")
 ```
 
 El selector dice `Nuevo` (singular) y la clave del archivo JSON es `Nuevos` (plural): al usar el valor del selector como clave directamente, apareció `KeyError: 'Nuevo'`. La línea `clave = ...` traduce uno al otro. (`.replace(".", ",")` muestra el decimal con coma, como se escribe en español.)
-
 
 ## 8. Decisiones de diseño y alternativas descartadas
 
@@ -586,7 +585,7 @@ Documentarlos sirve para reconocerlos rápido si vuelven a pasar.
 - **Estabilidad ≠ acierto.** La API devuelve siempre lo mismo para el mismo cliente; la calidad la mide el Recall@12 (7,5 % con historial; 2,0 % nuevos).
 - El puntaje del ranker **no es una probabilidad real**.
 - Los clientes nuevos reciben una lista **igual para todos**: no hay personalización sin historial.
-  - La tabla de clientes del dataset **no tiene género** (solo edad, estado en el club, newsletter y código postal anonimizado), así que el sistema no puede distinguir entre un cliente y una clienta nuevos. El catálogo está dominado por Ladieswear (37,6 % de los artículos), y las 12 prendas del baseline (dos vestidos, un jean, suéteres, un cardigan, pantalones) parecen de línea femenina, aunque esto último no se verificó contra el grupo de índice (`prendas_min.parquet` no lo incluye). Personalizar por edad ya se probó y no mejoró lo más vendido (hipótesis H1: 4,3 contra 4,6 aciertos cada 100 en clientes nuevos). Por eso el Recall@12 de los nuevos es bajo (2,04 %).
+  - La tabla de clientes del dataset **no tiene género** (solo edad, estado en el club, newsletter y código postal anonimizado), así que el sistema no puede distinguir entre un cliente y una clienta nuevos. El catálogo está dominado por Ladieswear (37,6 % de los artículos), y las 12 prendas del baseline (dos vestidos, un jean, suéteres, un cardigan, pantalones) son 7 de Ladieswear y 5 de Divided (línea juvenil y adolescente), en su mayoría femeninas; ninguna es de Menswear, Sport ni Baby/Children. Se verificó con la columna `index_group_name` del catálogo completo (`articles.parquet`), porque `prendas_min.parquet` no la incluye. Personalizar por edad ya se probó y no mejoró lo más vendido (hipótesis H1: 4,3 contra 4,6 aciertos cada 100 en clientes nuevos). Por eso el Recall@12 de los nuevos es bajo (2,04 %).
 - **Evaluación offline:** se mide si el cliente compró lo recomendado, no si la recomendación causó la compra; los datos no registran qué prendas vio cada cliente (sesgo de exposición). Para saber el efecto real haría falta una prueba A/B.
 - **Techo de candidatas:** el ranker solo puede recomendar prendas que estén entre las candidatas del cliente (≈93 en promedio para los clientes con historial), así que el Recall@12 está acotado por esa cobertura.
 - Una prenda del catálogo original de H&M figura con tipo inconsistente (código `874619001`, "Marissa Hoodie (J)", tipo *Bra*, grupo *Underwear*): viene del dataset original, no de la demo.
