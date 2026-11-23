@@ -80,6 +80,9 @@ cliente = st.sidebar.selectbox(
     "Cliente", filtro["customer_id"].tolist(), format_func=lambda c: c[:10] + "…"
 )
 
+# Mostrar el ID completo del cliente seleccionado
+st.sidebar.code(cliente)
+
 compras = int(filtro.loc[filtro["customer_id"] == cliente, "n_compras_previas"].iloc[0])
 st.sidebar.metric("Compras previas del cliente", compras)
 

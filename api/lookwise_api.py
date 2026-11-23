@@ -9,6 +9,17 @@ AQUI = Path(__file__).resolve().parent
 MODELOS = AQUI.parent / "models"  # el modelo oficial: api/ y models/ quedan lado a lado en el repo
 app = FastAPI()
 
+# se agrega pagina inicio:
+
+@app.get("/")
+def inicio():
+    return {
+        "proyecto": "Outfit Analytics - Lookwise Data Lab",
+        "estado": "API funcionando",
+        "documentacion": "/docs",
+        "salud": "/salud"
+    }
+
 # Se cargan UNA sola vez, al arrancar
 modelo = joblib.load(MODELOS / "ranker_clasificador.joblib")
 with open(MODELOS / "configuracion_modelo.json", encoding="utf-8") as f:
