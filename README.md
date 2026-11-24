@@ -5,7 +5,7 @@
 Equipo **Lookwise Data Lab**. 
 Metodología: **CRISP-DM con Scrum (sprints)**.
 
-**¿Primera vez en el repositorio?** Empezá por [`EMPIEZA_POR_AQUI.md`](EMPIEZA_POR_AQUI.md): una guía para práctica para leer, sin abrir notebooks ni código.
+**¿Primera vez en el repositorio?** Empezá por [`EMPIEZA_POR_AQUI.md`](EMPIEZA_POR_AQUI.md): una guía práctica para leer, sin abrir notebooks ni código.
 
 ## Contexto y objetivo
 
