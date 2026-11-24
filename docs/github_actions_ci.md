@@ -20,8 +20,8 @@ Lookwise Data Lab.
 
 ## Eventos que ejecutan el workflow
 
-- Push a main o developer.
-- Pull request hacia main o developer.
+- Push a main y rama-nacho.
+- Pull request hacia main.
 - Ejecución manual desde GitHub Actions.
 
 ## Validaciones automáticas
