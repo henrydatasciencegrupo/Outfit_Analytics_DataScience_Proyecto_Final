@@ -2,7 +2,7 @@
 
 Guía para recorrer el proyecto **Lookwise Data Lab: recomendador para clientes sin historial (cold start)**. Sigue el recorrido del proyecto según la metodología **CRISP-DM** (del negocio a los datos, el modelado, la evaluación y el despliegue) y, para cada entregable que pide la consigna y cada criterio de las rúbricas de la Demo 1 y la Demo Final, indica dónde está la evidencia en el repositorio.
 
-> **Estado:** versión del 20/11/2026. Lo marcado como *pendiente* se completa antes de la Demo Final; lo marcado como *en revisión* está en un pull request abierto.
+> **Estado:** versión del 24/11/2026. Lo marcado como *pendiente* se completa antes de la Demo Final; lo marcado como *en revisión* está en un pull request abierto.
 >
 > **Cómo se mantiene:** este índice se actualiza con cada entrega. Quien suba algo nuevo (por ejemplo, la demo, el dashboard o el manual) agrega su enlace en la sección que corresponde y cambia el estado a *Listo* en el mismo pull request.
 
@@ -10,6 +10,7 @@ Guía para recorrer el proyecto **Lookwise Data Lab: recomendador para clientes 
 
 Para entender el proyecto en pocos minutos:
 
+0. [`EMPIEZA_POR_AQUI.md`](../EMPIEZA_POR_AQUI.md): recorridos sugeridos según quién lee (negocio, técnico, evaluador).
 1. [`README.md`](../README.md): de qué se trata, resultados principales, limitaciones y equipo.
 2. [`docs/eda.md`](eda.md): qué encontramos en los datos.
 3. [`docs/modelado.md`](modelado.md): modelos, resultados y recomendaciones para H&M.
@@ -31,9 +32,9 @@ Dónde está la evidencia de cada criterio de evaluación.
 | Demo 1 | Justificación del modelo elegido | [Sección 7](#7-selección-y-justificación-del-modelo) | Listo |
 | Demo 1 y Final | Metodología ágil y retrospectiva | [Sección 14](#14-metodología-y-trabajo-en-equipo) | Retrospectiva pendiente |
 | Demo Final | Plan de validación y evaluación | [Sección 8](#8-plan-de-validación-y-evaluación) | Listo |
-| Demo Final | Pipeline reproducible (end-to-end) | [Sección 10](#10-pipeline-reproducible) | MLflow y GitHub Actions pendientes |
-| Demo Final | Despliegue funcional | [Sección 11](#11-despliegue) | Manual de usuario pendiente |
-| Demo Final | Dashboard interactivo | [Sección 12](#12-dashboard-interactivo) | Pendiente |
+| Demo Final | Pipeline reproducible (end-to-end) | [Sección 10](#10-pipeline-reproducible) | Listo (MLflow pendiente) |
+| Demo Final | Despliegue funcional | [Sección 11](#11-despliegue) | Listo |
+| Demo Final | Dashboard interactivo | [Sección 12](#12-dashboard-interactivo) | Listo |
 | Demo Final | Comprensión y defensa técnica | [Secciones 7 a 9](#7-selección-y-justificación-del-modelo) y [sección 13](#13-conclusiones-limitaciones-y-recomendaciones) | Listo |
 | Ambas | Calidad de la presentación y trabajo en equipo | [Sección 14](#14-metodología-y-trabajo-en-equipo) | Deck final pendiente |
 
@@ -45,8 +46,8 @@ Dónde está la evidencia de cada criterio de evaluación.
 | Análisis exploratorio e ingeniería de características | [Secciones 3 a 5](#3-análisis-exploratorio-eda) | Listo |
 | Prototipo funcional | [`models/`](../models/) · API en [`api/`](../api/) · demo en [`app/`](../app/) | Listo |
 | Plan de validación y despliegue | [`docs/plan_validacion.md`](plan_validacion.md) | Listo |
-| Informe técnico y manual de usuario | Documentación en [`docs/`](.) · manual de usuario | Manual pendiente |
-| Herramienta de comunicación | Presentación final y dashboard | Pendiente |
+| Informe técnico y manual de usuario | [`docs/resumen_ejecutivo.pdf`](resumen_ejecutivo.pdf) · documentación en [`docs/`](.) · [`docs/manual_usuario.md`](manual_usuario.md) | Listo |
+| Herramienta de comunicación | Dashboard en [`dashboard/`](../dashboard/) · presentación final | Dashboard listo · presentación en preparación |
 
 ## 1. Problema y contexto
 
@@ -140,8 +141,9 @@ Los datos no se incluyen en el repositorio: se dejan en `dataset/p10/` (ver [`do
 | Ejecución de punta a punta | [`src/pipeline.py`](../src/pipeline.py) | Listo |
 | Librerías necesarias | [`requirements.txt`](../requirements.txt) | Listo |
 | Pasos para reproducir (rutas relativas, semillas fijas) | [`README.md`](../README.md) → *Cómo reproducirlo* | Listo |
+| Contenedores con Docker (API y pantalla) | [`api/Dockerfile`](../api/Dockerfile) · [`app/Dockerfile`](../app/Dockerfile) · [`compose.yaml`](../compose.yaml) | Listo |
+| Automatización con GitHub Actions (pruebas de la API y la pantalla) | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) · [`docs/github_actions_ci.md`](github_actions_ci.md) | Listo |
 | Seguimiento de experimentos con MLflow | | Pendiente |
-| Automatización con GitHub Actions | | Pendiente |
 
 ## 11. Despliegue
 
@@ -149,14 +151,14 @@ Los datos no se incluyen en el repositorio: se dejan en `dataset/p10/` (ver [`do
 |---|---|---|
 | Aplicación de demostración (Streamlit): elegir un cliente y ver sus 12 recomendaciones | [`app/`](../app/) · [`docs/demo_api_streamlit.md`](demo_api_streamlit.md) | Listo |
 | API de recomendaciones | [`api/`](../api/) · [`docs/demo_api_streamlit.md`](demo_api_streamlit.md) | Listo |
-| Manual de usuario | | Pendiente |
+| Manual de usuario | [`docs/manual_usuario.md`](manual_usuario.md) | Listo |
 | Plan de despliegue: piloto A/B, escalado por etapas y monitoreo | [`docs/plan_validacion.md`](plan_validacion.md) → secciones 7 y 8 | Listo |
 
 ## 12. Dashboard interactivo
 
 | Qué | Dónde | Estado |
 |---|---|---|
-| Dashboard en Power BI con métricas y resultados | [`dashboard/`](../dashboard/) | Pendiente |
+| Dashboard en Power BI: 10 páginas, del problema a la decisión, con filtros de fecha, edad, métrica y escenarios | Plantilla [`dashboard/Dashboard_Lookwise.pbit`](../dashboard/Dashboard_Lookwise.pbit) (sin datos) · vista rápida [`dashboard/Dashboard_Lookwise.pdf`](../dashboard/Dashboard_Lookwise.pdf) | Listo |
 | Datos del dashboard | [`reports/`](../reports/) (CSV) | Listo |
 
 ## 13. Conclusiones, limitaciones y recomendaciones
@@ -165,6 +167,9 @@ Los datos no se incluyen en el repositorio: se dejan en `dataset/p10/` (ver [`do
 |---|---|
 | Recomendaciones para H&M | [`docs/modelado.md`](modelado.md) → *5. Recomendaciones para H&M* |
 | Limitaciones y oportunidades de mejora | [`README.md`](../README.md) → *Limitaciones* · [`docs/eda.md`](eda.md) → *Limitaciones a declarar* · [`docs/plan_validacion.md`](plan_validacion.md) → *9. Limitaciones y oportunidades de mejora* |
+| Costos y retorno de la inversión | [`docs/costos_roi.md`](costos_roi.md) → *7. Conclusión para el negocio* |
+| Gobernanza de IA y de datos: riesgos, sesgos, transparencia y monitoreo | [`docs/gobernanza_ia_datos.md`](gobernanza_ia_datos.md) |
+| Resumen ejecutivo para el negocio | [`docs/resumen_ejecutivo.pdf`](resumen_ejecutivo.pdf) |
 | Próximos pasos | [`docs/modelado.md`](modelado.md) → *Próximos pasos del proyecto* |
 
 ## 14. Metodología y trabajo en equipo
