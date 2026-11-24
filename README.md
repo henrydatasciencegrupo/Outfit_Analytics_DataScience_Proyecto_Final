@@ -1,7 +1,11 @@
 # Lookwise Data Lab: recomendador para clientes sin historial (cold start)
 
+[![Pruebas automáticas](https://github.com/henrydatasciencegrupo/Outfit_Analytics_DataScience_Proyecto_Final/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/henrydatasciencegrupo/Outfit_Analytics_DataScience_Proyecto_Final/actions/workflows/ci.yml)
+
 Equipo **Lookwise Data Lab**. 
 Metodología: **CRISP-DM con Scrum (sprints)**.
+
+**¿Primera vez en el repositorio?** Empezá por [`EMPIEZA_POR_AQUI.md`](EMPIEZA_POR_AQUI.md): una guía para práctica para leer, sin abrir notebooks ni código.
 
 ## Contexto y objetivo
 
@@ -38,6 +42,7 @@ Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repo
 ├── api/                          API de recomendación (FastAPI): sirve las 12 prendas de un cliente; lee el modelo de models/
 ├── app/                          demo en Streamlit: consulta la API y muestra las prendas recomendadas
 ├── dashboard/                    dashboard de Power BI (Sprint 2)
+├── .github/workflows/ci.yml      pruebas automáticas de la API y la pantalla (GitHub Actions)
 ├── docs/                         documentación por tema
 │   ├── dataset.md                          cómo obtener los datos, fuentes y estructura local
 │   ├── controles_integridad.md             controles de la muestra y calidad de los datos
@@ -47,8 +52,15 @@ Dataset **H&M Personalized Fashion Recommendations**. No se incluye en este repo
 │   ├── costos_roi.md                       inversión, retorno y probabilidad de recuperar la inversión
 │   ├── plan_validacion.md                  plan de validación offline, piloto A/B y monitoreo
 │   ├── demo_api_streamlit.md               API y demo: uso, decisiones, código y limitaciones
+│   ├── github_actions_ci.md                pruebas automáticas con GitHub Actions: qué validan y qué no
+│   ├── manual_usuario.md                   cómo probar el sistema: elegir un cliente y ver sus 12 prendas
+│   ├── gobernanza_ia_datos.md              datos que usa el sistema, riesgos y marco legal
+│   ├── resumen_ejecutivo.pdf               resumen del proyecto sin tecnicismos
+│   ├── indice.md                           evidencia de cada criterio de evaluación
 │   └── solucion_errores_git.md             problemas frecuentes con Git y VS Code
 ├── dataset/p10/                  datos locales (no se suben: ver docs/dataset.md)
+├── compose.yaml                  API y pantalla con Docker (ver «Demo: API y pantalla»)
+├── EMPIEZA_POR_AQUI.md           guía de lectura según lo que se necesite
 ├── requirements.txt
 └── README.md
 ```
@@ -57,11 +69,13 @@ Todos los notebooks leen los datos desde `../dataset/p10` (ruta relativa a `note
 
 ## Cómo reproducirlo
 
-1. **Crear el entorno.** Un único entorno virtual sirve para todo el proyecto: notebooks, API y pantalla. Requiere Python 3.11 o superior (probado con 3.13). Desde la carpeta del repositorio:
+1. **Crear el entorno.** Un único entorno virtual sirve para todo el proyecto: notebooks, API y pantalla. Requiere Python 3.11 o superior (probado con 3.13): antes de empezar, verificá la versión con `python --version`. Desde la carpeta del repositorio:
 
    ```bash
    python -m venv .venv
    ```
+
+   En Windows, si se tienen varias versiones de Python instaladas y `python --version` muestra una anterior a 3.11, recomendamos crear el entorno indicando la versión: `py -3.13 -m venv .venv`. Si  posteriormente `pip install` falla con *Could not find a version that satisfies the requirement pandas==3.1.1*, significa que el entorno se creó con un Python anterior a 3.11: eliminá la carpeta `.venv` y volvé a crearla.
 
    Activarlo:
 
@@ -76,15 +90,17 @@ Todos los notebooks leen los datos desde `../dataset/p10` (ruta relativa a `note
 
    Las versiones están fijadas a propósito: la API reproduce las recomendaciones oficiales solo con `scikit-learn==1.9.1` (con la 1.7.2, por ejemplo, las listas coinciden en cerca del 88%). Las carpetas `api/` y `app/` conservan su propio `requirements.txt`, útil para levantar una sola pieza; con el entorno único no hace falta instalarlos aparte. La carpeta `.venv` no se sube al repositorio.
 
-2. **Conseguir los datos:** los tres archivos Parquet de la muestra p10 (unos 63 MB) no se incluyen en este repositorio por su tamaño. Están a disposición en el equipo de Lookwise Data Lab (ver contactos en la sección [Equipo](#equipo)) y se dejan en `dataset/p10/`. Ver la estructura en [`docs/dataset.md`](docs/dataset.md). *Opcional:* quien quiera auditar cómo se armó la muestra puede reproducirla desde cero con `notebooks/01_muestreo_p10.ipynb`, descargando los CSV originales (ver [`docs/dataset.md`](docs/dataset.md)); no hace falta para correr el resto del proyecto.
+2. **Conseguir los datos:** los tres archivos Parquet de la muestra p10 (unos 63 MB) no se incluyen en este repositorio por su tamaño. Están a disposición para ser solicitados al equipo de Lookwise Data Lab (ver contactos en la sección [Equipo](#equipo)) y se dejan en `dataset/p10/`. Ver la estructura en [`docs/dataset.md`](docs/dataset.md). *Opcional:* quien quiera auditar cómo se armó la muestra puede reproducirla desde cero con `notebooks/01_muestreo_p10.ipynb`, descargando los CSV originales (ver [`docs/dataset.md`](docs/dataset.md)); no hace falta para correr el resto del proyecto.
 3. **Correr el EDA:** abrir `notebooks/02_EDA_unificado_p10.ipynb` desde la carpeta `notebooks/` y ejecutar todas las celdas.
-4. **Correr el modelado:** ejecutar los notebooks `03`, `04`, `05` y `06` en ese orden, o el pipeline completo desde la carpeta del repositorio:
+4. **Correr el modelado:** ejecutar los notebooks `03`, `04`, `05` y `06` en ese orden; el `06` es el final y de él salen el modelo elegido y los resultados.
+
+   También se puede reproducir sin notebooks: el script `src/pipeline.py` ejecuta de punta a punta el modelo final del notebook `06` (con la búsqueda de hiperparámetros y la selección del algoritmo por Recall@12) y regenera los resultados y los artefactos de `models/`. Se corre desde la carpeta del repositorio y tarda unos 5 minutos:
 
    ```bash
-   python src/pipeline.py --base dataset/p10 --salida reports
+   python src/pipeline.py --base dataset/p10 --salida reports --modelos models
    ```
 
-   Los notebooks pueden reescribir archivos de `reports/` y `models/`: si solo se desea probarlos, recomendamos crear una copia del repositorio para no incluir esos cambios en un commit.
+   Tanto los notebooks como el script reescriben archivos de `reports/` y `models/`: si solo se desea probarlos, recomendamos usar otras carpetas (`--salida salida_prueba --modelos salida_prueba`) o una copia del repositorio, para no incluir esos cambios en un commit.
 
    Los resultados y las decisiones están en la sección [Modelado y evaluación](#modelado-y-evaluación) de este README y en el notebook `06`.
 
@@ -164,7 +180,17 @@ cd app
 streamlit run app.py
 ```
 
-La API se prueba sola en `http://127.0.0.1:8000/docs` y sus 7 tests se corren con `pytest` desde `api/`. Si en lugar del entorno único se prefiere instalar una sola pieza, cada carpeta (`api/` y `app/`) trae su `requirements.txt` con versiones exactas. Los pasos completos, el contrato de la API, las decisiones de diseño y las limitaciones están en [`docs/demo_api_streamlit.md`](docs/demo_api_streamlit.md).
+La API se prueba sola en `http://127.0.0.1:8000/docs` y sus 7 tests se corren con `pytest` desde `api/`. Esos tests, junto con una verificación de sintaxis y de los archivos de la pantalla, corren automáticamente con GitHub Actions en cada push a `main` y en cada pull request hacia `main` (no reentrena el modelo; ver [`docs/github_actions_ci.md`](docs/github_actions_ci.md)). Si en lugar del entorno único se prefiere instalar una sola pieza, cada carpeta (`api/` y `app/`) trae su `requirements.txt` con versiones exactas. Los pasos completos, el contrato de la API, las decisiones de diseño y las limitaciones están en [`docs/demo_api_streamlit.md`](docs/demo_api_streamlit.md).
+
+### Con Docker (opcional)
+
+Si tenés Docker instalado, la API y la pantalla se pueden levantar juntas sin crear el entorno de Python. Desde la carpeta del repositorio:
+
+```bash
+docker compose up --build
+```
+
+La API queda en `http://localhost:8000` y la pantalla en `http://localhost:8501`. Docker prende primero la API y espera a que responda en `/salud` antes de levantar la pantalla. Las imágenes usan Python 3.13 y los `requirements.txt` de `api/` y `app/`. Para apagar todo: `docker compose down`.
 
 ## Costos y retorno de la inversión (ROI)
 
