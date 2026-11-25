@@ -170,7 +170,7 @@ Si el cliente no recibe respuesta, puede denunciar ante la [Agencia de Acceso a 
 
 **Menores de edad.** La Ley 25.326 no prohíbe tratar datos de menores: hoy no los distingue de los adultos. Se aplican el Código Civil y Comercial, que considera menores a quienes no cumplieron 18 años y adolescentes a partir de los 13, y la Ley 26.061 de protección integral de niñas, niños y adolescentes. Hay proyectos para sumar reglas específicas (por ejemplo, consentimiento válido desde los 16 años y, por debajo, el de padres o tutores), pero no son ley. Como Divided está dirigida a adolescentes, recomendamos un estándar de cuidado mayor: pedirles solo los datos necesarios, no usar su edad para segmentar más allá de la vitrina y definir con el área legal cómo se obtiene su consentimiento.
 
-**Inteligencia artificial.** No encontramos una ley nacional específica de IA vigente; en 2026 hay proyectos presentados en el Congreso (por ejemplo, [uno de presupuestos mínimos para el desarrollo de la IA](https://rest.hcdn.gob.ar/web/proyectos/289500/adjuntos/104100)). Conviene confirmar el estado antes de la entrega final y antes de cualquier lanzamiento.
+**Inteligencia artificial.** No encontramos una ley nacional específica de IA vigente; en 2026 hay proyectos presentados en el Congreso (por ejemplo, [uno de presupuestos mínimos para el desarrollo de la IA](https://rest.hcdn.gob.ar/web/proyectos/289500/adjuntos/104100)). El estado de estos proyectos y de la reforma de la Ley 25.326 debe revisarse antes de cualquier lanzamiento.
 
 **Marcos de referencia internacionales**, usados como guía y sin certificación:
 
