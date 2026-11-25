@@ -26,10 +26,10 @@ PRECIO_HORA = {"m7i.large": 0.1008, "m7i.xlarge": 0.2016}       # AWS on-demand,
 NUBE_MENSUAL = {
     "API de recomendaciones (2 servidores m7i.large, 24 h)": 2 * PRECIO_HORA["m7i.large"] * HORAS_MES,
     "Reentrenamiento semanal (m7i.xlarge, 10 h por semana)": PRECIO_HORA["m7i.xlarge"] * 10 * 52 / 12,
-    "Seguimiento de experimentos (MLflow) y monitoreo (1 m7i.large)": PRECIO_HORA["m7i.large"] * HORAS_MES,
+    "Monitoreo y registro de versiones (1 m7i.large)": PRECIO_HORA["m7i.large"] * HORAS_MES,
 }
 IMPREVISTOS_NUBE = 0.20               # almacenamiento, transferencia de datos y otros
-SOFTWARE_MENSUAL = 0.0                # pandas, scikit-learn, MLflow, FastAPI, Streamlit: código abierto
+SOFTWARE_MENSUAL = 0.0                # pandas, scikit-learn, FastAPI, Streamlit: código abierto
 PLATAFORMA_MENSUAL = 2_500.0          # tienda online tipo Shopify Plus, contrato de 1 año (referencia)
 
 # ---------------------------------------------------------------------------------------------
