@@ -32,7 +32,7 @@ Dónde está la evidencia de cada criterio de evaluación.
 | Demo 1 | Justificación del modelo elegido | [Sección 7](#7-selección-y-justificación-del-modelo) | Listo |
 | Demo 1 y Final | Metodología ágil y retrospectiva | [Sección 14](#14-metodología-y-trabajo-en-equipo) | Retrospectiva pendiente |
 | Demo Final | Plan de validación y evaluación | [Sección 8](#8-plan-de-validación-y-evaluación) | Listo |
-| Demo Final | Pipeline reproducible (end-to-end) | [Sección 10](#10-pipeline-reproducible) | Listo (MLflow pendiente) |
+| Demo Final | Pipeline reproducible (end-to-end) | [Sección 10](#10-pipeline-reproducible) | Listo |
 | Demo Final | Despliegue funcional | [Sección 11](#11-despliegue) | Listo |
 | Demo Final | Dashboard interactivo | [Sección 12](#12-dashboard-interactivo) | Listo |
 | Demo Final | Comprensión y defensa técnica | [Secciones 7 a 9](#7-selección-y-justificación-del-modelo) y [sección 13](#13-conclusiones-limitaciones-y-recomendaciones) | Listo |
@@ -143,7 +143,7 @@ Los datos no se incluyen en el repositorio: se dejan en `dataset/p10/` (ver [`do
 | Pasos para reproducir (rutas relativas, semillas fijas) | [`README.md`](../README.md) → *Cómo reproducirlo* | Listo |
 | Contenedores con Docker (API y pantalla) | [`api/Dockerfile`](../api/Dockerfile) · [`app/Dockerfile`](../app/Dockerfile) · [`compose.yaml`](../compose.yaml) | Listo |
 | Automatización con GitHub Actions (pruebas de la API y la pantalla) | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) · [`docs/github_actions_ci.md`](github_actions_ci.md) | Listo |
-| Seguimiento de experimentos con MLflow | | Pendiente |
+| Seguimiento de experimentos con MLflow | | No se implementa en esta etapa: queda como recomendación para la siguiente |
 
 ## 11. Despliegue
 
