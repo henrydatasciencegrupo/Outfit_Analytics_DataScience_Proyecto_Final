@@ -32,9 +32,9 @@ El cálculo está en `src/roi.py`, la simulación en `notebooks/08_costos_roi.ip
 | ----------------------------- | ---------------------------------------------------------------------------------------- | -------------------- | ----------------- |
 | Técnico (nube)               | API de recomendaciones: 2 servidores m7i.large encendidos todo el día (uno de respaldo) |                      | USD 147           |
 | Técnico (nube)               | Reentrenamiento semanal: 1 servidor m7i.xlarge, 10 horas por semana                      |                      | USD 9             |
-| Técnico (nube)               | Seguimiento de experimentos (MLflow) y monitoreo: 1 servidor m7i.large                   |                      | USD 74            |
+| Técnico (nube)               | Monitoreo y registro de versiones del modelo: 1 servidor m7i.large                       |                      | USD 74            |
 | Técnico (nube)               | Imprevistos (almacenamiento, transferencia de datos): 20%                                |                      | USD 46            |
-| Técnico (software)           | Licencias: pandas, scikit-learn, MLflow, FastAPI y Streamlit son de código abierto      |                      | USD 0             |
+| Técnico (software)           | Licencias: pandas, scikit-learn, FastAPI y Streamlit son de código abierto              |                      | USD 0             |
 | **Subtotal técnico**   |                                                                                          |                      | **USD 275** |
 | Honorarios                    | Desarrollo: 5 científicos de datos × 2 meses × USD 1.500                              | USD 15.000           |                   |
 | Honorarios                    | Operación y reentrenamiento: 1 científico de datos al 25% de su tiempo                 |                      | USD 375           |
