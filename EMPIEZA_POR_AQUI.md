@@ -21,6 +21,7 @@ H&M abre su tienda online en Argentina sin clientes conocidos. Construimos un si
 | Ver cómo se validó y cómo se probaría con clientes reales | [`docs/plan_validacion.md`](docs/plan_validacion.md) | 15 minutos |
 | Entender los datos: de dónde salen, qué tienen y qué problemas encontramos | [`docs/dataset.md`](docs/dataset.md) · [`docs/eda.md`](docs/eda.md) | 20 minutos |
 | Reproducir todo en tu computadora | [`README.md`](README.md), sección *Cómo reproducirlo* | Variable |
+| Saber qué se prueba automáticamente en cada cambio del repositorio | [`docs/github_actions_ci.md`](docs/github_actions_ci.md) | 5 minutos |
 | Buscar la evidencia de cada criterio de evaluación | [`docs/indice.md`](docs/indice.md) | Consulta |
 
 ## Recorridos sugeridos
@@ -35,6 +36,7 @@ H&M abre su tienda online en Argentina sin clientes conocidos. Construimos un si
 2. [`docs/modelado.md`](docs/modelado.md) y el notebook final, [`notebooks/06_metricas_optimizacion_decisiones.ipynb`](notebooks/06_metricas_optimizacion_decisiones.ipynb).
 3. [`docs/plan_validacion.md`](docs/plan_validacion.md).
 4. El código en [`src/`](src/), empezando por [`src/pipeline.py`](src/pipeline.py), que corre todo de punta a punta.
+5. [`docs/github_actions_ci.md`](docs/github_actions_ci.md): qué prueba GitHub Actions en cada cambio.
 
 ## Qué hay en cada carpeta
 
@@ -48,6 +50,8 @@ H&M abre su tienda online en Argentina sin clientes conocidos. Construimos un si
 | [`api/`](api/) | La API que entrega las 12 prendas de un cliente |
 | [`app/`](app/) | La pantalla de demostración (Streamlit), que consulta la API |
 | [`dashboard/`](dashboard/) | El dashboard de Power BI |
+| [`.github/workflows/`](.github/workflows/) | Las pruebas automáticas (GitHub Actions) de la API y la pantalla |
+| [`compose.yaml`](compose.yaml) | Levanta la API y la pantalla juntas con Docker (archivo, no carpeta) |
 
 Los datos no están en el repositorio: pertenecen a H&M Group y se usan bajo las reglas de la competencia de Kaggle. Cómo obtenerlos está en [`docs/dataset.md`](docs/dataset.md).
 

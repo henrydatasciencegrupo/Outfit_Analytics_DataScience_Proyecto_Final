@@ -50,12 +50,12 @@ No hace falta descargar los datos del proyecto: la demo trae en el repositorio t
 Desde la carpeta del repositorio, en una terminal:
 
 ```bash
-docker compose up
+docker compose up --build
 ```
 
 La primera vez tarda unos minutos, porque instala todo. Cuando termine, abrir **`http://localhost:8501`** en el navegador.
 
-Para apagarla: `Ctrl+C` en la terminal.
+Para apagarla: `Ctrl+C` en la terminal y después `docker compose down`.
 
 ### Opción B: con Python
 

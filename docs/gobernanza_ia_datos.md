@@ -1,6 +1,6 @@
 # Gobernanza de IA y de datos: recomendador de moda para la tienda online de H&M en Argentina
 
-Lookwise Data Lab · Nov 22, 2026
+Lookwise Data Lab
 
 ## Por qué este documento
 
@@ -58,7 +58,7 @@ El `customer_id` se usa solo como clave y ya viene anonimizado (hash) en el data
 - **La afinidad sigue el patrón de compra de cada cuenta.** El modelo aprende qué parte de las compras de cada cliente es de Ladieswear, Divided, Menswear, Sport o Baby/Children. Y lo tiene en cuenta: quien compra siempre ropa de mujer va a ver sobre todo ropa de mujer. Pero no es determinista: no deduce el género de la persona, sino que tiene en cuenta todas las líneas que compró. Por ejemplo, una clienta que compra sobre todo ropa de mujer y a veces ropa para sus hijos va a ver sobre todo ropa de mujer y también algo de ropa de chicos, porque las dos líneas están en su historial. Por eso se trata como una preferencia de compra, no como un dato de quién es el cliente. Es una señal legítima, porque sale de lo que el cliente eligió, pero refuerza lo que ya compra (ver Equidad y sesgos).
 - **Calidad del catálogo:** 3.873 artículos (3,67%) tienen el grupo de prenda como "Unknown", 416 no tienen descripción y al menos una prenda está mal clasificada en el dataset original (un buzo con capucha registrado como corpiño). El 26,3% del catálogo no tiene ventas en el entrenamiento y no puede recomendarse hasta que se venda (cifra inflada por la muestra del 10%).
 - **Calidad de las compras:** integridad completa entre tablas; el 11,96% de las compras son filas repetidas y se conservan, porque no se puede confirmar si son varias unidades, talles o devoluciones. Cada decisión está cuantificada en `reports/tratamiento_datos.csv`.
-- **Trazabilidad:** muestra del 10% de clientes elegida con un hash determinístico (reproducible y anidada), corte temporal por fecha, chequeo automático de que las variables no usan información posterior al corte, semillas fijas y versiones de librerías fijadas. El código está versionado en GitHub y cada cambio lo aprueba un integrante distinto del que lo escribió.
+- **Trazabilidad:** muestra del 10% de clientes elegida con un hash determinístico (reproducible y anidada), corte temporal por fecha, chequeo automático de que las variables no usan información posterior al corte, semillas fijas y versiones de librerías fijadas. El código está versionado en GitHub y cada cambio lo aprueba un integrante distinto del que lo escribió. Las pruebas de la API y de la pantalla corren automáticamente con GitHub Actions en cada push y en cada pull request hacia `main` (`.github/workflows/ci.yml`).
 - **Seguridad:** la API y la demo son un prototipo sin autenticación, pensado para correr en una computadora o en contenedores locales; los identificadores ya vienen anonimizados. En producción hacen falta acceso con usuario, conexión cifrada y registro de accesos.
 - **Minimización:** el sistema no pide ni infiere el género. La edad como variable directa casi no aporta al ranker: conviene evaluar quitarla en el próximo reentrenamiento y medir si cambia el desempeño. El tramo de edad sí aporta, a través de las candidatas y de las ventas por tramo, así que esa parte se mantiene mientras no haya otra señal que la reemplace. Para los clientes nuevos se propone una pregunta opcional al registrarse (la sección de interés), preferible a pedir el género.
 - **Menores de edad:** el dataset tiene clientes desde los 16 años, y Divided, la línea juvenil y adolescente, es la segunda en recomendaciones (25,4%). Entre los clientes de 20 años o menos, Divided es el 36,8% de sus compras. El tratamiento de sus datos se desarrolla en el marco normativo.
@@ -108,7 +108,7 @@ Hoy la explicación está resuelta para H&M y para el equipo técnico, pero no p
 | --- | --- | --- |
 | Dirección de H&M | Riesgos, impacto y criterios de aprobación | Resumen ejecutivo; plan de validación con regla de escalado por etapas |
 | Negocio (e-commerce, merchandising) | Lógica general, variables que más pesan y cómo usar el resultado | `docs/modelado.md`; señales más importantes: recompra, co-compra y recencia del cliente; la demo muestra qué etapa aplicó el sistema |
-| Equipo técnico | Versión de datos y modelo, métricas y pruebas | Notebooks, `models/configuracion_modelo.json` (variables, hiperparámetros, fecha de corte), `reports/`; registro de cada entrenamiento en MLflow |
+| Equipo técnico | Versión de datos y modelo, métricas y pruebas | Notebooks, `models/configuracion_modelo.json` (variables, hiperparámetros, fecha de corte), `reports/`; historial de versiones en GitHub y pruebas automáticas con GitHub Actions |
 | Cliente de la tienda | Por qué ve esas prendas y cómo desactivar la personalización | No existe todavía |
 
 **Propuesta para el cliente:** una leyenda corta en las recomendaciones basadas en su historial (por ejemplo, "te mostramos esto porque compraste X"), un aviso de que la vitrina está personalizada y una opción para pasar a ver lo más vendido.
@@ -127,7 +127,7 @@ El plan de validación ya define el seguimiento semanal del desempeño; este doc
 | Diversidad | Prendas distintas recomendadas por semana | Caída frente a lo observado en el piloto (umbral a definir con H&M) | Propuesto aquí |
 | Brecha por grupo | Mejora sobre el control por tramo de edad y por línea | Un tramo o línea deja de tener mejora significativa (umbral a definir con H&M) | Propuesto aquí |
 | Datos de entrada | Edad de los clientes, reparto de compras por línea y proporción de prendas sin ventas, comparados cada semana con los datos de entrenamiento | Prueba de cambio de distribución: Kolmogorov-Smirnov para la edad y chi-cuadrado para el reparto por línea (o el índice de estabilidad poblacional, PSI); umbral a definir con H&M | Propuesto aquí |
-| Registro de versiones | Parámetros, muestra y métricas de cada entrenamiento en MLflow | Poder volver a una versión anterior | En el pipeline (MLflow) |
+| Registro de versiones | Código, modelo y configuración (`models/configuracion_modelo.json`) versionados en GitHub; las pruebas de la API y la pantalla corren con GitHub Actions | Poder volver a una versión anterior | Versiones en GitHub; registrar parámetros y métricas de cada entrenamiento (MLflow) queda como mejora futura |
 
 **Dos tipos de desfase.** Si cambian los datos de entrada (por ejemplo, el perfil de edad de los clientes argentinos frente al del dataset), hay *data drift*. Si cambia la relación entre lo que se ve y lo que se compra (una tendencia, una temporada), hay *concept drift*. El segundo es el más probable en moda. El data drift se detecta con pruebas estadísticas sobre los datos de entrada; el concept drift, con la caída del desempeño frente al grupo de control.
 
@@ -170,7 +170,7 @@ Si el cliente no recibe respuesta, puede denunciar ante la [Agencia de Acceso a 
 
 **Menores de edad.** La Ley 25.326 no prohíbe tratar datos de menores: hoy no los distingue de los adultos. Se aplican el Código Civil y Comercial, que considera menores a quienes no cumplieron 18 años y adolescentes a partir de los 13, y la Ley 26.061 de protección integral de niñas, niños y adolescentes. Hay proyectos para sumar reglas específicas (por ejemplo, consentimiento válido desde los 16 años y, por debajo, el de padres o tutores), pero no son ley. Como Divided está dirigida a adolescentes, recomendamos un estándar de cuidado mayor: pedirles solo los datos necesarios, no usar su edad para segmentar más allá de la vitrina y definir con el área legal cómo se obtiene su consentimiento.
 
-**Inteligencia artificial.** No encontramos una ley nacional específica de IA vigente; en 2026 hay proyectos presentados en el Congreso (por ejemplo, [uno de presupuestos mínimos para el desarrollo de la IA](https://rest.hcdn.gob.ar/web/proyectos/289500/adjuntos/104100)). Conviene confirmar el estado antes de la entrega final y antes de cualquier lanzamiento.
+**Inteligencia artificial.** No encontramos una ley nacional específica de IA vigente; en 2026 hay proyectos presentados en el Congreso (por ejemplo, [uno de presupuestos mínimos para el desarrollo de la IA](https://rest.hcdn.gob.ar/web/proyectos/289500/adjuntos/104100)). El estado de estos proyectos y de la reforma de la Ley 25.326 debe revisarse antes de cualquier lanzamiento.
 
 **Marcos de referencia internacionales**, usados como guía y sin certificación:
 
@@ -189,7 +189,7 @@ De diez riesgos identificados, cuatro tienen medida y evidencia en el repositori
 | Sesgo por edad y línea | Evaluación por grupos con intervalos de confianza | `reports/piloto_ab_por_edad.csv`, `reports/piloto_ab_por_linea.csv` | Resuelto en simulación; falta el piloto real |
 | Popularidad y visibilidad del catálogo | Métrica de prendas distintas (H5) | `docs/modelado.md` | Resuelto |
 | Efecto causal desconocido | Piloto A/B con regla de escalado y control fijo de 5% | `docs/plan_validacion.md`, `notebooks/07_piloto_ab_simulado.ipynb` | Diseñado, sin ejecutar |
-| Seguimiento del modelo | Indicadores semanales y alertas | `docs/plan_validacion.md`, sección 8 | En el plan y en MLflow |
+| Seguimiento del modelo | Indicadores semanales y alertas | `docs/plan_validacion.md`, sección 8 | En el plan; sin automatizar |
 | Explicación al cliente | Leyenda de motivo, aviso de personalización y opción de salida | Propuesta en este documento | Pendiente |
 | Base legal y conservación | Consentimiento, finalidad, plazo de conservación y derechos del titular (Ley 25.326) | Propuesta en este documento | Pendiente con asesoría legal |
 | Clientes menores de 18 años | Revisar el tratamiento de datos de menores (el dataset incluye desde 16 años) | Propuesta en este documento | Pendiente con asesoría legal |
